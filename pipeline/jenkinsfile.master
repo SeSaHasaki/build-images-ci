@@ -1,0 +1,54 @@
+#!groovy
+pipeline {
+    agent any
+	environment{
+        EMAIL_LIST='sangjing@leinao.ai'
+    }
+	options {
+        timeout(time: 15, unit: 'MINUTES')
+		buildDiscarder(logRotator(numToKeepStr: '30'))
+    }
+    stages {
+		stage('代码检查') {
+            steps {
+				echo '代码检查'
+			}
+        }
+
+		stage('镜像编译') {
+            steps {
+				echo '镜像编译'
+			}
+        }
+		stage('镜像发布') {
+            steps {
+                echo '镜像发布'
+			}
+        }
+    }
+
+	post {
+        always {
+			echo '流水线已停止'
+        }
+		changed{
+			echo '流水线状态已改变'
+		}
+		unstable{
+			echo '流水线不稳定'
+		}
+		failure{
+			echo '流水线失败'
+			//emailext body: '$DEFAULT_CONTENT', subject: '严重！ $DEFAULT_SUBJECT', to: "${EMAIL_LIST}"
+		}
+		success{
+			echo '流水线成功'
+			//emailext body: '$DEFAULT_CONTENT', subject: '恭喜！ $PROJECT_NAME - Build # $BUILD_NUMBER - 构建成功!', to: "${EMAIL_LIST}"
+			//emailext body: '${JELLY_SCRIPT,template="sangjing_email_html"}', subject: '恭喜！ $PROJECT_NAME - Build # $BUILD_NUMBER - 构建成功!', to: "j.sang@haihangyun.com"
+		}
+		aborted{
+			echo '流水线已被用户终止'
+			//emailext body: '${JELLY_SCRIPT,template="html"}', subject: '已终止! $PROJECT_NAME - Build # $BUILD_NUMBER', to: "${EMAIL_LIST}"
+		}
+    }
+}
