@@ -19,9 +19,9 @@ pipeline {
             steps {
                 dir('images'){
                     script {
-                        def imageName = '10.12.4.26:5000/example:123.${BUILD_NUMBER}'
+                        def image = '10.12.4.26:5000/example:123.${BUILD_NUMBER}'
                         docker.withRegistry('http://10.12.4.26:5000') {
-                            docker.build(imageName).push()
+                            image.push()
                         }
                     }
 				}
