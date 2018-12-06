@@ -1,6 +1,5 @@
 #!groovy
 pipeline {
-    dir('images'){
     agent { dockerfile true }
 	environment{
         EMAIL_LIST='sangjing@leinao.ai'
@@ -31,7 +30,7 @@ pipeline {
 			}
         }
     }
-}
+
 	post {
         always {
 			echo '流水线已停止'
