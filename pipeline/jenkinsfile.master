@@ -24,8 +24,6 @@ pipeline {
                             docker.build(imageName).push()
                         }
                     }
-
-				    echo '镜像编译'
 				}
 			}
         }
