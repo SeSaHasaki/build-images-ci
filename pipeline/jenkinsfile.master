@@ -20,9 +20,12 @@ pipeline {
                 dir('images'){
                     script {
                         def image = docker.build("example-group/example:123")
+                        docker.withRegistry(url: '10.12.4.26', 'docker-registry') {
+                            image.push()
+                            image.push('latest')
+                        }
                     }
-                    //docker build -t XXXX .
-                    //docker tag XXXX 10.11.3.8:5000/user-images/XXXX
+
 				    echo '镜像编译'
 				}
 			}
