@@ -1,6 +1,6 @@
 #!groovy
 pipeline {
-    agent any
+    agent { dockerfile true }
 	environment{
         EMAIL_LIST='sangjing@leinao.ai'
     }
@@ -18,8 +18,9 @@ pipeline {
 		stage('镜像编译') {
             steps {
                 dir('images'){
-                    //docker build -t 【镜像名】
-				    echo `pwd`
+                    //docker build -t XXXX .
+                    //docker tag XXXX 10.11.3.8:5000/user-images/XXXX
+				    echo '镜像编译'
 				}
 			}
         }
