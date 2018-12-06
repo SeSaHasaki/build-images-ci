@@ -11,7 +11,7 @@ pipeline {
     stages {
 		stage('代码检查') {
             steps {
-				echo '代码检查'
+				echo '代码检查-推送测试'
 			}
         }
 
