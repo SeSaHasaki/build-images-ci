@@ -11,13 +11,16 @@ pipeline {
     stages {
 		stage('代码检查') {
             steps {
-				echo '代码检查-推送测试3'
+				echo '代码检查'
 			}
         }
 
 		stage('镜像编译') {
             steps {
-				echo '镜像编译'
+                dir('images'){
+                    //docker build -t 【镜像名】
+				    echo `pwd`
+				}
 			}
         }
 		stage('镜像发布') {
