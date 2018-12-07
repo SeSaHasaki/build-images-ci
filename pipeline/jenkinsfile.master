@@ -21,16 +21,14 @@ pipeline {
                     script {
                         sh "docker login -u sangjing -p sangjing 10.12.4.26:5000"
                         docker.withRegistry('http://10.12.4.26:5000') {
-                            def imageName = '10.12.4.26:5000/example:123.${BUILD_NUMBER}'
-                            docker.build(imageName).push()
+                            //def imageName = '10.12.4.26:5000/example:123.${BUILD_NUMBER}'
+                            //docker.build(imageName).push()
+                                def image = docker.build("10.12.4.26:5000/example:${BUILD_NUMBER}")
+                                image.push()
+                                image.push('latest')
                         }
                     }
 				}
-			}
-        }
-		stage('镜像发布') {
-            steps {
-                echo '镜像发布'
 			}
         }
     }
