@@ -4,10 +4,10 @@ pipeline {
 	environment{
         EMAIL_LIST='sangjing@leinao.ai'
     }
-	//options {
-        //timeout(time: 15, unit: 'MINUTES')
-		//buildDiscarder(logRotator(numToKeepStr: '30'))
-    //}
+	options {
+        timeout(time: 15, unit: 'MINUTES')
+		buildDiscarder(logRotator(numToKeepStr: '30'))
+    }
     stages {
 		stage('代码检查') {
             steps {
@@ -19,13 +19,14 @@ pipeline {
             steps {
                 dir('images'){
                     script {
-                        //sh "docker login -u sangjing -p sangjing 10.12.4.26:5000"
-                        def image = docker.build("10.12.4.26:5000/example:${BUILD_NUMBER}")
-                        //docker.withRegistry('http://10.12.4.26:5000') {
-                            docker.build(imageName).push()
+                        sh "docker login -u sangjing -p sangjing 10.12.4.26:5000"
+                        //def image = docker.build("10.12.4.26:5000/example:${BUILD_NUMBER}")
+                        def image = docker.build("10.12.4.26:5000/example")
+                        docker.withRegistry('http://10.12.4.26:5000') {
+                            //docker.build(imageName).push()
                                // image.push()
-                               // image.push('latest')
-                       // }
+                               image.push('latest')
+                        }
                     }
 				}
 			}
