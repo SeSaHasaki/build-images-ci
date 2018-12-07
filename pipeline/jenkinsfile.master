@@ -12,9 +12,8 @@ pipeline {
 		stage('代码检查') {
             steps {
 				echo '代码检查'
-				script {
-				    sh "echo ${WORKSPACE}"
-				}
+				echo ${WORKSPACE}
+				echo ${JOB_BASE_NAME}
 			}
         }
 
