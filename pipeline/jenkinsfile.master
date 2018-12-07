@@ -2,7 +2,7 @@
 pipeline {
     agent any
 	environment{
-        EMAIL_LIST='sangjing@leinao.ai'
+        EMAIL_LIST='sangjing@leinao.ai,xwzheng@leinao.ai'
     }
 	options {
         timeout(time: 15, unit: 'MINUTES')
@@ -13,22 +13,30 @@ pipeline {
             steps {
 				echo '代码检查'
 				echo "${WORKSPACE}"
-				echo "${JOB_BASE_NAME}"
+				echo "${JOB_BASE_NAME}/images"
 			}
         }
 
-		stage('镜像编译') {
+		stage('镜像编译并上传至仓库') {
             steps {
                 dir('images'){
                     script {
                         docker.withRegistry('http://10.12.4.26:5000') {
-                            def imageName = "10.12.4.26:5000/sangjing:${BUILD_NUMBER}"
+                            def imageName = "10.12.4.26:5000/user-images/sangjing:${BUILD_NUMBER}"
                             docker.build(imageName).push()
                         }
                     }
                 }
             }
-}
+        }
+
+		stage('更新数据库') {
+            steps {
+				echo '代码检查'
+				echo "${WORKSPACE}"
+				echo "${JOB_BASE_NAME}/images"
+			}
+        }
     }
 
 	post {
