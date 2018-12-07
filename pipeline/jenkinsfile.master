@@ -22,7 +22,7 @@ pipeline {
                         //sh "docker login -u sangjing -p sangjing 10.12.4.26:5000"
                         docker.withRegistry('http://10.12.4.26:5000') {
                             def image = docker.build("sangjing:${BUILD_NUMBER}")
-                            docker.build(image).push()
+                            image.push()
                         }
                     }
 				}
