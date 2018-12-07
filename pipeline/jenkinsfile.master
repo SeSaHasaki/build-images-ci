@@ -14,7 +14,7 @@ pipeline {
 				echo '代码检查'
 				script {
 				    def buidnumber = "${BUILD_NUMBER}"
-				    echo %buidnumber%
+				    sh "echo ${buidnumber}"
                     //sh "echo ${CHANGE_AUTHOR}"
                     //sh "echo ${CHANGE_AUTHOR_DISPLAY_NAME}"
                     //sh "echo ${CHANGE_AUTHOR_EMAIL}"
