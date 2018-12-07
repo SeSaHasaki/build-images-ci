@@ -22,7 +22,7 @@ pipeline {
                              sh "docker login -u sangjing -p sangjing 10.12.4.26:5000"
                              def image = docker.build("10.12.4.26:5000/sangjing:${BUILD_NUMBER}")
                              image.push("${BUILD_NUMBER}")
-                            }
+
                     }
 				}
 			}
