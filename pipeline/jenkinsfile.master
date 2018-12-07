@@ -20,12 +20,11 @@ pipeline {
                 dir('images'){
                     script {
                         sh "docker login -u sangjing -p sangjing 10.12.4.26:5000"
+                        def image = docker.build("10.12.4.26:5000/example:${BUILD_NUMBER}")
                         docker.withRegistry('http://10.12.4.26:5000') {
-                            //def imageName = '10.12.4.26:5000/example:123.${BUILD_NUMBER}'
-                            //docker.build(imageName).push()
-                                def image = docker.build("10.12.4.26:5000/example:${BUILD_NUMBER}")
-                                image.push()
-                                image.push('latest')
+                            docker.build(imageName).push()
+                               // image.push()
+                               // image.push('latest')
                         }
                     }
 				}
@@ -43,14 +42,18 @@ pipeline {
 		unstable{
 			echo '流水线不稳定'
 		}
-		failure{
-			echo '流水线失败'
-		}
-		success{
-			echo '流水线成功'
-		}
-		aborted{
-			echo '流水线已被用户终止'
-		}
+		   		failure{
+   			echo '流水线失败'
+   			emailext body: '$DEFAULT_CONTENT', subject: '严重！ $DEFAULT_SUBJECT', to: "${EMAIL_LIST}"
+   		}
+   		success{
+   			echo '流水线成功'
+   			emailext body: '$DEFAULT_CONTENT', subject: '恭喜！ $PROJECT_NAME - Build # $BUILD_NUMBER - 构建成功!', to: "${EMAIL_LIST}"
+   			//emailext body: '${JELLY_SCRIPT,template="sangjing_email_html"}', subject: '恭喜！ $PROJECT_NAME - Build # $BUILD_NUMBER - 构建成功!', to: "j.sang@haihangyun.com"
+   		}
+   		aborted{
+   			echo '流水线已被用户终止'
+   			emailext body: '${JELLY_SCRIPT,template="html"}', subject: '已终止! $PROJECT_NAME - Build # $BUILD_NUMBER', to: "${EMAIL_LIST}"
+   		}
     }
 }
