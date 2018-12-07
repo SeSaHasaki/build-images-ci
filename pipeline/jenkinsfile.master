@@ -12,10 +12,10 @@ pipeline {
 		stage('代码检查') {
             steps {
 				echo '代码检查'
-				echo "${CHANGE_AUTHOR}"
-				echo "${CHANGE_AUTHOR_DISPLAY_NAME}"
-				echo "${CHANGE_AUTHOR_EMAIL}"
-				echo "${WORKSPACE}"
+				sh "echo ${CHANGE_AUTHOR}""
+				sh "echo ${CHANGE_AUTHOR_DISPLAY_NAME}"
+				sh "echo ${CHANGE_AUTHOR_EMAIL}
+				sh "echo ${WORKSPACE}
 			}
         }
 
