@@ -13,10 +13,11 @@ pipeline {
             steps {
 				echo '代码检查'
 				script {
-                    sh "echo ${CHANGE_AUTHOR}"
-                    sh "echo ${CHANGE_AUTHOR_DISPLAY_NAME}"
-                    sh "echo ${CHANGE_AUTHOR_EMAIL}"
-                    sh "echo ${WORKSPACE}"
+				    echo ${BUILD_NUMBER}
+                    //sh "echo ${CHANGE_AUTHOR}"
+                    //sh "echo ${CHANGE_AUTHOR_DISPLAY_NAME}"
+                    //sh "echo ${CHANGE_AUTHOR_EMAIL}"
+                    //sh "echo ${WORKSPACE}"
 				}
 			}
         }
