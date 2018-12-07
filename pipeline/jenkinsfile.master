@@ -15,6 +15,7 @@ pipeline {
 				script {
 				    def buidnumber = "${BUILD_NUMBER}"
 				    sh "echo ${buidnumber}"
+				    sh "echo ${CHANGE_AUTHOR}"
                     //sh "echo ${CHANGE_AUTHOR}"
                     //sh "echo ${CHANGE_AUTHOR_DISPLAY_NAME}"
                     //sh "echo ${CHANGE_AUTHOR_EMAIL}"
