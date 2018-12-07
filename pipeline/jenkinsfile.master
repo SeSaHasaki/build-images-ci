@@ -21,6 +21,7 @@ pipeline {
                     script {
                         def imageName = '10.12.4.26:5000/example:123.${BUILD_NUMBER}'
                         sh "docker login -u sangjing -p sangjing 10.12.4.26:5000"
+                        dockerFingerprintFrom dockerfile: 'dockerfile', image: '10.12.4.26:5000/example:123.${BUILD_NUMBER}'
                         docker.withRegistry('http://10.12.4.26:5000') {
                             docker.build(imageName).push()
                         }
