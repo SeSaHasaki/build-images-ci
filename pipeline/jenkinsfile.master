@@ -19,13 +19,13 @@ pipeline {
             steps {
                 dir('images'){
                     script {
-                             sh "docker login -u sangjing -p sangjing 10.12.4.26:5000"
-                             def image = docker.build("10.12.4.26:5000/sangjing:${BUILD_NUMBER}")
-                             image.push("${BUILD_NUMBER}")
-
+                        docker.withRegistry('http://10.12.4.26:5000') {
+                            def imageName = "10.12.4.26:5000/sangjing:${BUILD_NUMBER}"
+                            docker.build(imageName).push()
+                        }
                     }
-				}
-			}
+                }
+            }
         }
     }
 
