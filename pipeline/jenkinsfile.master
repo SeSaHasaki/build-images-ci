@@ -19,11 +19,9 @@ pipeline {
             steps {
                 dir('images'){
                     script {
-                        docker.withRegistry('http://10.12.4.26:5000') {
-                            def imageName = "sangjing:${BUILD_NUMBER}"
-                            //def image = docker.build("sangjing:${BUILD_NUMBER}")
-                            docker.build(imageName).push()
-                        }
+                            sh "docker login -u sangjing -p sangjing 10.12.4.26:5000"
+                            def image = docker.build("sangjing:${BUILD_NUMBER}")
+                            image.push("${BUILD_NUMBER}")
                     }
 				}
 			}
