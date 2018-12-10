@@ -23,9 +23,11 @@ pipeline {
                     script {
                         docker.withRegistry('http://10.12.4.26:5000') {
                             sh 'export DIR=`git log -1 --name-only -- . | grep Dockerfile | awk -F "/" \'{print$2}\'`'
-                            def imageName = "10.12.4.26:5000/user-images/${DIR}:${BUILD_NUMBER}"
-                            docker.build(imageName).push()
-                            echo "${DIR}"
+                            if ${DIR} != ' '{
+                                def imageName = "10.12.4.26:5000/user-images/${DIR}:${BUILD_NUMBER}"
+                                docker.build(imageName).push()
+                            }
+                            else    echo "${DIR}"
                         }
                     }
                 }
