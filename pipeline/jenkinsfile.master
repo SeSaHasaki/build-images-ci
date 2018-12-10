@@ -3,6 +3,7 @@ pipeline {
     agent any
 	environment{
         EMAIL_LIST='sangjing@leinao.ai'
+        DIR = "`git log -1 --name-only -- . | grep Dockerfile | awk -F "/" \'{print$2}\'`"
     }
 	options {
         timeout(time: 15, unit: 'MINUTES')
@@ -22,7 +23,7 @@ pipeline {
                 dir('images'){
                     script {
                         docker.withRegistry('http://10.12.4.26:5000') {
-                            sh 'export DIR=`git log -1 --name-only -- . | grep Dockerfile | awk -F "/" \'{print$2}\'`'
+                            //sh 'export DIR=`git log -1 --name-only -- . | grep Dockerfile | awk -F "/" \'{print$2}\'`'
                             //if (${DIR} != ' '){
                                 def imageName = "10.12.4.26:5000/user-images/${env.DIR}:${BUILD_NUMBER}"
                                 docker.build(imageName).push()
