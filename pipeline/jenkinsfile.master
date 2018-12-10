@@ -22,7 +22,7 @@ pipeline {
                 dir('images'){
                     script {
                         docker.withRegistry('http://10.12.4.26:5000') {
-                            sh "dir = `git log -1 --stat | grep images | awk -F "/" '{print$2}'`"
+                            sh "dir = `git log -1 --stat | grep images | awk -F "/" '{print${2}}'`"
                             def DIR = dir
                             echo "${DIR}"
                             def imageName = "10.12.4.26:5000/user-images/${DIR}:${BUILD_NUMBER}"
