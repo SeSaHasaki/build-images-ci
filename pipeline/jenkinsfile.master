@@ -26,7 +26,7 @@ pipeline {
                             sh 'export DIR=`git log -1 --name-only -- . | grep Dockerfile | awk -F "/" \'{print$2}\'`'
                             //def DIR = $(git log -1 --name-only -- . | grep Dockerfile | awk -F "/" \'{print$2}\')
                             //
-                            echo "${DIR}"
+                            echo "${HOSTNAME}"
                             //if (${DIR} != ' '){
                              //   def imageName = "10.12.4.26:5000/user-images/${env.DIR}:${BUILD_NUMBER}"
                              //   docker.build(imageName).push()
