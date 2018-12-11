@@ -23,7 +23,7 @@ pipeline {
                 dir('images/test_dir'){
                     script {
                         docker.withRegistry('http://10.12.4.26:5000') {
-                            //sh "bash ${WORKSPACE}/pipeline/ENV.sh"
+                            sh "bash ${WORKSPACE}/pipeline/ENV.sh"
                             def CHANGE_DIR = readFile "${WORKSPACE}/pipeline/CHANGE_DIR"
                             //dir("${CHANGE_DIR}"){
                                // if ("${CHANGE_DIR}" != ' '){
@@ -35,7 +35,7 @@ pipeline {
                                // else{
                                //     echo "本次更新无镜像产生，原因：无Dockerfile更新"
                                // }
-                           // }
+                            //}
                         }
                     }
                 }
