@@ -25,16 +25,17 @@ pipeline {
                         docker.withRegistry('http://10.12.4.26:5000') {
                             sh "bash ${WORKSPACE}/pipeline/ENV.sh"
                             def CHANGE_DIR = readFile "${WORKSPACE}/pipeline/CHANGE_DIR"
-                            dir("${CHANGE_DIR}"){
+                            //dir("${CHANGE_DIR}"){
                                // if ("${CHANGE_DIR}" != ' '){
                                //     sh "echo `pwd`"
                                     def imageName = "10.12.4.26:5000/user-images/sangjing:${BUILD_NUMBER}"
-                                    docker.build(imageName,"-f ${WORKSPACE}/images/${CHANGE_DIR}/Dockerfile ${WORKSPACE}/images/${CHANGE_DIR}").push()
+                                    def dockerfile = "-f ${WORKSPACE}/images/${CHANGE_DIR}/Dockerfile ${WORKSPACE}/images/${CHANGE_DIR}"
+                                    docker.build(imageName,dockerfile).push()
                                // }
                                // else{
                                //     echo "本次更新无镜像产生，原因：无Dockerfile更新"
                                // }
-                            }
+                            //}
                         }
                     }
                 }
