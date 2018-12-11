@@ -27,7 +27,9 @@ pipeline {
                             def CHANGE_DIR = readFile "${WORKSPACE}/pipeline/CHANGE_DIR"
                             //dir("${CHANGE_DIR}"){
                                 if ("${CHANGE_DIR}" != ' '){
-                                    def imageName = "10.12.4.26:5000/user-images/CHANGE_DIR:${BUILD_NUMBER}"
+                                    def tmp = ${CHANGE_DIR}:${BUILD_NUMBER}
+                                    echo "${tmp}"
+                                    def imageName = "10.12.4.26:5000/user-images/${tmp}"
                                     def dockerFile = "-f Dockerfile ."
                                     docker.build(imageName,dockerFile).push()
                                     echo "产生更新镜像，镜像名称：${imageName}"
