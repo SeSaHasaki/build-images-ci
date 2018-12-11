@@ -24,14 +24,15 @@ pipeline {
                     script {
                         docker.withRegistry('http://10.12.4.26:5000') {
                             sh "bash ${WORKSPACE}/pipeline/ENV.sh"
-                            sleep 2
                             def CHANGE_DIR = readFile "${WORKSPACE}/pipeline/CHANGE_DIR"
                             echo "${CHANGE_DIR}"
                             if (${CHANGE_DIR} != ' '){
-                             //   def imageName = "10.12.4.26:5000/user-images/${env.DIR}:${BUILD_NUMBER}"
-                             //   docker.build(imageName).push()
-                            //}
-                            else    echo "本次更新无镜像产生，原因：无Dockerfile更新"
+                                def imageName = "10.12.4.26:5000/user-images/${CHANGE_DIR}:${BUILD_NUMBER}"
+                                docker.build(imageName).push()
+                            }
+                            else{
+                                echo "本次更新无镜像产生，原因：无Dockerfile更新"
+                            }
                         }
                     }
                 }
