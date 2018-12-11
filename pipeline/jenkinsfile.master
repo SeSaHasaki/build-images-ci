@@ -29,7 +29,7 @@ pipeline {
                                // if ("${CHANGE_DIR}" != ' '){
                                //     sh "echo `pwd`"
                                     def imageName = "10.12.4.26:5000/user-images/sangjing:${BUILD_NUMBER}"
-                                    docker.build(imageName,"-f ${CHANGE_DIR} ./Dockerfiles").push()
+                                    docker.build(imageName,"-f ${CHANGE_DIR}/Dockerfiles").push()
                                // }
                                // else{
                                //     echo "本次更新无镜像产生，原因：无Dockerfile更新"
