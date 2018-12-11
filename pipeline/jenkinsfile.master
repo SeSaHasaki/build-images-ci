@@ -25,7 +25,7 @@ pipeline {
                         docker.withRegistry('http://10.12.4.26:5000') {
                             sh 'git log -1 --name-only -- ../images/ | grep Dockerfile | awk -F \'/\' \'{print$2}\' > CHANGE_DIR'
                             def CHANGE_DIR = readFile "${WORKSPACE}/pipeline/CHANGE_DIR"
-                            echo "${CHANGE_DIR[0]}"
+                            echo "${CHANGE_DIR[0][1]}"
                             dir("${WORKSPACE}/images/${CHANGE_DIR}"){
                                 if ("${CHANGE_DIR}" != ' '){
                                     def imageName = "10.12.4.26:5000/user-images/${CHANGE_DIR}:${BUILD_NUMBER}"
