@@ -20,16 +20,15 @@ pipeline {
 
 		stage('镜像编译并上传至仓库') {
             steps {
-                dir('images/test_dir'){
+                dir('images'){
                     script {
                         docker.withRegistry('http://10.12.4.26:5000') {
-                            sh "bash ${WORKSPACE}/pipeline/ENV.sh"
+                            //sh "bash ${WORKSPACE}/pipeline/ENV.sh"
+                            sh "git log -1 --name-only -- ../ | grep Dockerfile | awk -F '/' '{print$2}'"
                             def CHANGE_DIR = readFile "${WORKSPACE}/pipeline/CHANGE_DIR"
-                            //dir("${CHANGE_DIR}"){
+                            dir("${CHANGE_DIR}"){
                                 if ("${CHANGE_DIR}" != ' '){
-                                    def tmp = "${CHANGE_DIR}:${BUILD_NUMBER}"
-                                    echo "${tmp}"
-                                    def imageName = "10.12.4.26:5000/user-images/${tmp}"
+                                    def imageName = "10.12.4.26:5000/user-images/${CHANGE_DIR}:${BUILD_NUMBER}"
                                     def dockerFile = "-f Dockerfile ."
                                     docker.build(imageName,dockerFile).push()
                                     echo "产生更新镜像，镜像名称：${imageName}"
@@ -37,7 +36,7 @@ pipeline {
                                 else{
                                     echo "本次更新无镜像产生，原因：无Dockerfile更新"
                                 }
-                            //}
+                            }
                         }
                     }
                 }
