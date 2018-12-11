@@ -26,15 +26,14 @@ pipeline {
                             sh "bash ${WORKSPACE}/pipeline/ENV.sh"
                             def CHANGE_DIR = readFile "${WORKSPACE}/pipeline/CHANGE_DIR"
                             //dir("${CHANGE_DIR}"){
-                               // if ("${CHANGE_DIR}" != ' '){
-                               //     sh "echo `pwd`"
+                                if ("${CHANGE_DIR}" != ' '){
                                     def imageName = "10.12.4.26:5000/user-images/sangjing:${BUILD_NUMBER}"
-                                    def dockerfile = "-f Dockerfile ."
-                                    docker.build(imageName,dockerfile).push()
-                               // }
-                               // else{
-                               //     echo "本次更新无镜像产生，原因：无Dockerfile更新"
-                               // }
+                                    def dockerFile = "-f Dockerfile ."
+                                    docker.build(imageName,dockerFile).push()
+                                }
+                                else{
+                                    echo "本次更新无镜像产生，原因：无Dockerfile更新"
+                                }
                             //}
                         }
                     }
