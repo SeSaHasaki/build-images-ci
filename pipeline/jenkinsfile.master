@@ -29,7 +29,7 @@ pipeline {
                                // if ("${CHANGE_DIR}" != ' '){
                                //     sh "echo `pwd`"
                                     def imageName = "10.12.4.26:5000/user-images/sangjing:${BUILD_NUMBER}"
-                                    docker.build(imageName,"-f Dockerfiles ${CHANGE_DIR}").push()
+                                    docker.build(imageName,"-f Dockerfiles ${WORKSPACE}/images/${CHANGE_DIR}").push()
                                // }
                                // else{
                                //     echo "本次更新无镜像产生，原因：无Dockerfile更新"
@@ -60,7 +60,7 @@ pipeline {
 		}
 		failure{
    			echo '流水线失败'
-   			emailext body: '$DEFAULT_CONTENT', subject: '严重！ $DEFAULT_SUBJECT', to: "${EMAIL_LIST}"
+   			//emailext body: '$DEFAULT_CONTENT', subject: '严重！ $DEFAULT_SUBJECT', to: "${EMAIL_LIST}"
    		}
    		success{
    			echo '流水线成功'
