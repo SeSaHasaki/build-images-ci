@@ -26,7 +26,7 @@ pipeline {
                             sh "bash ${WORKSPACE}/pipeline/ENV.sh"
                             def CHANGE_DIR = readFile "${WORKSPACE}/pipeline/CHANGE_DIR"
                             if ("${CHANGE_DIR}" != ' '){
-                                def imageName = "10.12.4.26:5000/user-images/${CHANGE_DIR}:${BUILD_NUMBER}"
+                                def imageName = "10.12.4.26:5000/user-images/sangjing:${BUILD_NUMBER}"
                                 docker.build(imageName).push()
                             }
                             else{
