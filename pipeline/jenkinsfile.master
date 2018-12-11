@@ -24,6 +24,7 @@ pipeline {
                     script {
                         docker.withRegistry('http://10.12.4.26:5000') {
                             sh "bash ${WORKSPACE}/pipeline/ENV.sh"
+                            sleep 2
                             def CHANGE_DIR = readFile "${WORKSPACE}/pipeline/CHANGE_DIR"
                             echo "${CHANGE_DIR}"
                             //if (${DIR} != ' '){
