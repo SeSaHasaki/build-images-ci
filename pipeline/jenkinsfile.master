@@ -26,7 +26,7 @@ pipeline {
                             //sh "bash ${WORKSPACE}/pipeline/ENV.sh"
                             sh 'git log -1 --name-only -- . | grep Dockerfile | awk -F \'/\' \'{print$2}\''
                             sh 'export result="`git version`"'
-                            sh 'echo $result'
+                            sh 'echo "$result"'
                             def CHANGE_DIR = readFile "${WORKSPACE}/pipeline/CHANGE_DIR"
                             dir("${CHANGE_DIR}"){
                                 if ("${CHANGE_DIR}" != ' '){
