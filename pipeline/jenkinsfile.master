@@ -20,15 +20,15 @@ pipeline {
 
 		stage('镜像编译并上传至仓库') {
             steps {
-                //dir('images'){
+                dir('images'){
                     script {
                         docker.withRegistry('http://10.12.4.26:5000') {
                             sh "bash ${WORKSPACE}/pipeline/ENV.sh"
                             def CHANGE_DIR = readFile "${WORKSPACE}/pipeline/CHANGE_DIR"
-                            dir("images/${CHANGE_DIR}"){
+                            dir("${CHANGE_DIR}"){
                                 if ("${CHANGE_DIR}" != ' '){
                                     def imageName = "10.12.4.26:5000/user-images/sangjing:${BUILD_NUMBER}"
-                                    docker.build(imageName).push()
+                                    //docker.build(imageName).push()
                                 }
                                 else{
                                     echo "本次更新无镜像产生，原因：无Dockerfile更新"
@@ -36,7 +36,7 @@ pipeline {
                             }
                         }
                     }
-                //}
+                }
             }
         }
 
