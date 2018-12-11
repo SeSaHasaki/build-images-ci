@@ -25,8 +25,7 @@ pipeline {
                         docker.withRegistry('http://10.12.4.26:5000') {
                             sh "bash ${WORKSPACE}/pipeline/ENV.sh"
                             def CHANGE_DIR = readFile "${WORKSPACE}/pipeline/CHANGE_DIR"
-                            echo "${CHANGE_DIR}"
-                            if (${CHANGE_DIR} != ' '){
+                            if ("${CHANGE_DIR}" != ' '){
                                 def imageName = "10.12.4.26:5000/user-images/${CHANGE_DIR}:${BUILD_NUMBER}"
                                 docker.build(imageName).push()
                             }
@@ -41,9 +40,7 @@ pipeline {
 
 		stage('更新数据库') {
             steps {
-				echo '代码检查'
-				echo "${WORKSPACE}"
-				echo "${JOB_BASE_NAME}/images"
+				echo '更新数据库'
 			}
         }
     }
