@@ -23,7 +23,7 @@ pipeline {
                 dir('images'){
                     script {
                         docker.withRegistry('http://10.12.4.26:5000') {
-                            sh "bash ${WORKSPACE}/pipeline/ENV.sh"
+                            sh "source ${WORKSPACE}/pipeline/ENV.sh"
                             //def DIR = $(git log -1 --name-only -- . | grep Dockerfile | awk -F "/" \'{print$2}\')
                             //
                             echo "${CHANGE_DIR}"
