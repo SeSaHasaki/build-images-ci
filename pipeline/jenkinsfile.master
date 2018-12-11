@@ -24,7 +24,7 @@ pipeline {
                     script {
                         docker.withRegistry('http://10.12.4.26:5000') {
                             //sh 'export DIR=`git log -1 --name-only -- . | grep Dockerfile | awk -F "/" \'{print$2}\'`'
-                            def DIR = $(git log -1 --name-only -- . | grep Dockerfile | awk -F "/" \'{print$2}\')
+                            def DIR = $(git log -1 --name-only -- . | grep Dockerfile | awk -F "/" \'{print\$2}\')
                             echo "${DIR}"
                             //if (${DIR} != ' '){
                                 def imageName = "10.12.4.26:5000/user-images/${env.DIR}:${BUILD_NUMBER}"
@@ -58,7 +58,7 @@ pipeline {
 		}
 		failure{
    			echo '流水线失败'
-   			//emailext body: '$DEFAULT_CONTENT', subject: '严重！ $DEFAULT_SUBJECT', to: "${EMAIL_LIST}"
+   			emailext body: '$DEFAULT_CONTENT', subject: '严重！ $DEFAULT_SUBJECT', to: "${EMAIL_LIST}"
    		}
    		success{
    			echo '流水线成功'
