@@ -27,6 +27,7 @@ pipeline {
                             def CHANGE_DIR = readFile "${WORKSPACE}/pipeline/CHANGE_DIR"
                             dir("${CHANGE_DIR}"){
                                 if ("${CHANGE_DIR}" != ' '){
+                                    sh "echo `pwd`"
                                     def imageName = "10.12.4.26:5000/user-images/sangjing:${BUILD_NUMBER}"
                                     docker.build(imageName).push()
                                 }
