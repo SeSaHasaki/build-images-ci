@@ -27,11 +27,11 @@ pipeline {
                             sleep 2
                             def CHANGE_DIR = readFile "${WORKSPACE}/pipeline/CHANGE_DIR"
                             echo "${CHANGE_DIR}"
-                            //if (${DIR} != ' '){
+                            if (${CHANGE_DIR} != ' '){
                              //   def imageName = "10.12.4.26:5000/user-images/${env.DIR}:${BUILD_NUMBER}"
                              //   docker.build(imageName).push()
                             //}
-                            //else    echo "${env.DIR}"
+                            else    echo "本次更新无镜像产生，原因：无Dockerfile更新"
                         }
                     }
                 }
