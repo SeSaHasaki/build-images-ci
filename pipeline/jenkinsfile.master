@@ -20,13 +20,12 @@ pipeline {
 
 		stage('镜像编译并上传至仓库') {
             steps {
-                dir('images'){
+                dir('pipeline'){
                     script {
                         docker.withRegistry('http://10.12.4.26:5000') {
-                            //sh "bash ${WORKSPACE}/pipeline/ENV.sh"
-                            sh 'git log -1 --name-only -- . | grep Dockerfile | awk -F \'/\' \'{print$2}\' > CHANGE_DIR'
+                            sh 'git log -1 --name-only -- ../images/ | grep Dockerfile | awk -F \'/\' \'{print$2}\' > CHANGE_DIR'
                             def CHANGE_DIR = readFile "${WORKSPACE}/pipeline/CHANGE_DIR"
-                            dir("${CHANGE_DIR}"){
+                            dir("${WORKSPACE}/images/${CHANGE_DIR}"){
                                 if ("${CHANGE_DIR}" != ' '){
                                     def imageName = "10.12.4.26:5000/user-images/${CHANGE_DIR}:${BUILD_NUMBER}"
                                     def dockerFile = "-f Dockerfile ."
