@@ -29,7 +29,9 @@ pipeline {
                             echo "${CHANGE_DIR[0]}"
                             dir("${WORKSPACE}/images/${CHANGE_DIR[0]}"){
                                 if ("${CHANGE_DIR}" != ' '){
-                                    def imageName = "10.12.4.26:5000/user-images/${CHANGE_DIR[0]}:${BUILD_NUMBER}"
+                                    environment {imageName = "10.12.4.26:5000/user-images/${CHANGE_DIR[0]}:${BUILD_NUMBER}"}
+                                    echo “全局ENV is ${env.imageName}"
+                                    //def imageName = "10.12.4.26:5000/user-images/${CHANGE_DIR[0]}:${BUILD_NUMBER}"
                                     def dockerFile = "-f Dockerfile ."
                                     docker.build(imageName,dockerFile).push()
                                     echo "产生更新镜像，镜像名称：${imageName}"
