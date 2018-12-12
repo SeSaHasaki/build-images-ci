@@ -30,9 +30,9 @@ pipeline {
                             }
                             echo "${CHANGE_DIR[0]}"
                             //echo "${CHANGE_DIR}"
-                            dir("${WORKSPACE}/images/${CHANGE_DIR}"){
+                            dir("${WORKSPACE}/images/${CHANGE_DIR[0]}"){
                                 if ("${CHANGE_DIR}" != ' '){
-                                    def imageName = "10.12.4.26:5000/user-images/${CHANGE_DIR}:${BUILD_NUMBER}"
+                                    def imageName = "10.12.4.26:5000/user-images/${CHANGE_DIR[0]}:${BUILD_NUMBER}"
                                     def dockerFile = "-f Dockerfile ."
                                     docker.build(imageName,dockerFile).push()
                                     echo "产生更新镜像，镜像名称：${imageName}"
@@ -49,7 +49,10 @@ pipeline {
 
 		stage('更新数据库') {
             steps {
-				echo '更新数据库'
+                dir("${WORKSPACE}/pipeline"){
+				    echo '更新数据库'
+				    sh 'python update_mysql.py'
+				}
 			}
         }
     }
