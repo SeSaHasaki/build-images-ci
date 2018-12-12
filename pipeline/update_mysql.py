@@ -11,7 +11,7 @@ print(sys.argv[0])
 print(sys.argv[1])
 
 imageName = sys.argv[1]
-imageNameSplit = imageName.split('/')
+imageNameSplit = imageName.split(':')
 imageNameUserDefine = imageNameSplit[2]
 print(imageNameUserDefine)
 #10.12.4.26:5000/user-images/test_dir:170
