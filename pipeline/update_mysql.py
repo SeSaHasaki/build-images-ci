@@ -12,8 +12,6 @@ print(sys.argv[1])
 
 imageName = sys.argv[1]
 imageNameSplit = imageName.split('/')
-print(imageNameSplit[0])
-print(imageNameSplit[2])
 
 #10.12.4.26:5000/user-images/test_dir:170
 
