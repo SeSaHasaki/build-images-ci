@@ -24,7 +24,7 @@ db = MySQLdb.connect("127.0.0.1", "root", "sangjing", "dataset", charset='utf8' 
 cursor = db.cursor()
 
 # SQL 插入语句
-sql = """INSERT INTO images(name,place,description,provider,createtime) VALUES ("imageNameSplit[2]","10.11.3.8:5000/user-images/sangjing","这是我的镜像描述","sangjing",NOW())"""
+sql = """INSERT INTO images(name,place,description,provider,createtime) VALUES (imageNameSplit[2],"10.11.3.8:5000/user-images/sangjing","这是我的镜像描述","sangjing",NOW())"""
 try:
    # 执行sql语句
    cursor.execute(sql)
