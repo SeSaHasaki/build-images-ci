@@ -7,9 +7,6 @@ import MySQLdb
 #打印脚本路径
 print(sys.argv[0])
 
-#打印第一个参数
-print(sys.argv[1])
-
 imageName = sys.argv[1]
 imageNameSplit = imageName.split('/')
 imageNameUserDefine = imageNameSplit[2]
