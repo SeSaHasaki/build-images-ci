@@ -12,7 +12,7 @@ pipeline {
 		stage('代码检查') {
             steps {
 				echo '本次更新如下：'
-				sh 'echo `git log -1 --name-only`'
+				sh 'echo `git log -1 --name-only |awk '{{printf"%s,",$0}}'|awk -F ",," '{print$3}'`'
 				echo "文件路径：${WORKSPACE}"
 				echo "用户镜像存储路径：${JOB_BASE_NAME}/images"
 			}
