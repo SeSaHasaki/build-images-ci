@@ -3,7 +3,6 @@ pipeline {
     agent any
 	environment{
         EMAIL_LIST='sangjing@leinao.ai'
-        //DIR="`git log -1 --name-only -- . | grep Dockerfile | awk -F "/" '{print$2}'`"
     }
 	options {
         timeout(time: 15, unit: 'MINUTES')
@@ -24,12 +23,10 @@ pipeline {
                     script {
                         docker.withRegistry('http://10.12.4.26:5000') {
                             sh 'git log -1 --name-only -- ../images/ | grep Dockerfile | awk -F \'/\' \'{print$2}\' > CHANGE_DIR'
-                            //def CHANGE_DIR = readFile "${WORKSPACE}/pipeline/CHANGE_DIR"
                             def CHANGE_DIR = readFile("${WORKSPACE}/pipeline/CHANGE_DIR").split("\r?\n").each {
                                 println it
                             }
                             echo "${CHANGE_DIR[0]}"
-                            //echo "${CHANGE_DIR}"
                             dir("${WORKSPACE}/images/${CHANGE_DIR[0]}"){
                                 if ("${CHANGE_DIR}" != ' '){
                                     def imageName = "10.12.4.26:5000/user-images/${CHANGE_DIR[0]}:${BUILD_NUMBER}"
