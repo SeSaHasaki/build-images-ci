@@ -30,7 +30,7 @@ pipeline {
                             dir("${WORKSPACE}/images/${CHANGE_DIR[0]}"){
                                 if ("${CHANGE_DIR}" != ' '){
                                     environment {imageName = "10.12.4.26:5000/user-images/${CHANGE_DIR[0]}:${BUILD_NUMBER}"}
-                                    echo “全局ENV is ${env.imageName}"
+                                    echo "全局ENV is ${env.imageName}"
                                     //def imageName = "10.12.4.26:5000/user-images/${CHANGE_DIR[0]}:${BUILD_NUMBER}"
                                     def dockerFile = "-f Dockerfile ."
                                     docker.build(imageName,dockerFile).push()
