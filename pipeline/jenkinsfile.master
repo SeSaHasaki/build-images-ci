@@ -28,8 +28,8 @@ pipeline {
                             def CHANGE_DIR = readFile("${WORKSPACE}/pipeline/CHANGE_DIR").split("\r?\n").each {
                                 println it
                             }
-                            //echo "${CHANGE_DIR[0]}"
-                            echo "${CHANGE_DIR}"
+                            echo "${CHANGE_DIR[0]}"
+                            //echo "${CHANGE_DIR}"
                             dir("${WORKSPACE}/images/${CHANGE_DIR}"){
                                 if ("${CHANGE_DIR}" != ' '){
                                     def imageName = "10.12.4.26:5000/user-images/${CHANGE_DIR}:${BUILD_NUMBER}"
