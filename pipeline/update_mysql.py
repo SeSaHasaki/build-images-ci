@@ -1,7 +1,14 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
 
+import sys
 import MySQLdb
+
+#打印脚本路径
+print(sys.argv[0])
+
+#打印第一个参数
+print(sys.argv[1])
 
 # 打开数据库连接
 db = MySQLdb.connect("127.0.0.1", "root", "sangjing", "dataset", charset='utf8' )

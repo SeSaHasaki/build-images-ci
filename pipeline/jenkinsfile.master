@@ -29,14 +29,10 @@ pipeline {
                             echo "${CHANGE_DIR[0]}"
                             dir("${WORKSPACE}/images/${CHANGE_DIR[0]}"){
                                 if ("${CHANGE_DIR}" != ' '){
-                                    environment {imageName = "10.12.4.26:5000/user-images/${CHANGE_DIR[0]}:${BUILD_NUMBER}"}
-                                    echo "全局ENV is ${env.imageName}"
-                                    environment {dockerFile = "-f Dockerfile ."}
-                                    echo "全局ENV is ${env.dockerFile}"
-                                    //def imageName = "10.12.4.26:5000/user-images/${CHANGE_DIR[0]}:${BUILD_NUMBER}"
-                                    //def dockerFile = "-f Dockerfile ."
-                                    docker.build(env.imageName,env.dockerFile).push()
-                                    echo "产生更新镜像，镜像名称：${env.imageName}"
+                                    def imageName = "10.12.4.26:5000/user-images/${CHANGE_DIR[0]}:${BUILD_NUMBER}"
+                                    def dockerFile = "-f Dockerfile ."
+                                    docker.build(imageName,dockerFile).push()
+                                    echo "产生更新镜像，镜像名称：${imageName}"
                                 }
                                 else{
                                     echo "本次更新无镜像产生，原因：无Dockerfile更新"
@@ -52,7 +48,7 @@ pipeline {
             steps {
                 dir("${WORKSPACE}/pipeline"){
 				    echo '更新数据库'
-				    sh 'python update_mysql.py'
+				    sh "python update_mysql.py ${imageName}"
 				}
 			}
         }
