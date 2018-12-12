@@ -21,12 +21,12 @@ db = MySQLdb.connect("127.0.0.1", "root", "sangjing", "dataset", charset='utf8' 
 # 使用cursor()方法获取操作游标
 cursor = db.cursor()
 
+#cursor.execute("""INSERT INTO images(name,place,description,provider,createtime) VALUES (%s,"10.11.3.8:5000/user-images/sangjing","这是我的镜像描述","sangjing",NOW())"""%(a))
 # SQL 插入语句
-#sql = """INSERT INTO images(name,place,description,provider,createtime) VALUES (%s,"10.11.3.8:5000/user-images/sangjing","这是我的镜像描述","sangjing",NOW())"""
+sql = """INSERT INTO images(name,place,description,provider,createtime) VALUES (%s,"10.11.3.8:5000/user-images/sangjing","这是我的镜像描述","sangjing",NOW())"""%(imageNameSplit[0])
 try:
    # 执行sql语句
-   #cursor.execute(sql)
-   cursor.execute("INSERT INTO images(name,place,description,provider,createtime) VALUES (%s,'10.11.3.8:5000/user-images/sangjing','这是我的镜像描述','sangjing',NOW())",a)
+   cursor.execute(sql)
    # 提交到数据库执行
    db.commit()
 except:
