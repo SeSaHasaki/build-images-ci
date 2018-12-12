@@ -11,9 +11,10 @@ pipeline {
     stages {
 		stage('代码检查') {
             steps {
-				echo '代码检查'
-				echo "${WORKSPACE}"
-				echo "${JOB_BASE_NAME}/images"
+				echo '本次更新如下：'
+				sh 'echo `git log -1 --name-only`'
+				echo "文件路径：${WORKSPACE}"
+				echo "用户镜像存储路径：${JOB_BASE_NAME}/images"
 			}
         }
 
@@ -46,12 +47,14 @@ pipeline {
 		stage('更新数据库') {
             steps {
                 dir("${WORKSPACE}/pipeline"){
-				    echo '更新数据库'
-                    def CHANGE_DIR = readFile("${WORKSPACE}/pipeline/CHANGE_DIR").split("\r?\n").each {
+                echo '更新数据库'
+                    script {
+                        def CHANGE_DIR = readFile("${WORKSPACE}/pipeline/CHANGE_DIR").split("\r?\n").each {
                                 println it
+                        }
+                        def imageName = "10.12.4.26:5000/user-images/${CHANGE_DIR[0]}:${BUILD_NUMBER}"
+                        sh "python update_mysql.py ${imageName}"
                     }
-                    def imageName = "10.12.4.26:5000/user-images/${CHANGE_DIR[0]}:${BUILD_NUMBER}"
-				    sh "python update_mysql.py ${imageName}"
 				}
 			}
         }
