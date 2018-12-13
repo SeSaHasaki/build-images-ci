@@ -9,6 +9,7 @@ print(sys.argv[0])
 
 imageName = sys.argv[1]
 imageNameSplit = imageName.split('/')
+provider = sys.argv[2]
 
 # 打开数据库连接
 db = MySQLdb.connect("127.0.0.1", "root", "sangjing", "dataset", charset='utf8' )
@@ -17,7 +18,7 @@ db = MySQLdb.connect("127.0.0.1", "root", "sangjing", "dataset", charset='utf8' 
 cursor = db.cursor()
 
 # SQL 插入语句
-sql = """INSERT INTO images(name,place,description,provider,createtime) VALUES ("%s","10.11.3.8:5000/user-images/sangjing","这是我的镜像描述","sangjing",NOW())"""%(imageNameSplit[2])
+sql = """INSERT INTO images(name,place,description,provider,createtime) VALUES ("%s","%s","这是我的镜像描述","%s",NOW())"""%(imageNameSplit[2],imageNameSplit[0],provider)
 try:
    # 执行sql语句
    cursor.execute(sql)

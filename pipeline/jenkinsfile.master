@@ -54,7 +54,8 @@ pipeline {
                                 println it
                         }
                         def imageName = "10.12.4.26:5000/user-images/${CHANGE_DIR[0]}:${BUILD_NUMBER}"
-                        sh "python update_mysql.py ${imageName}"
+                        def PROVIDER = readFile("${WORKSPACE}/pipeline/PROVIDER").split("\r?\n").each{}
+                        sh "python update_mysql.py ${imageName} ${PROVIDER[0]}"
                     }
 				}
 			}
@@ -83,9 +84,7 @@ pipeline {
    			echo '流水线成功'
    			emailext body: '$DEFAULT_CONTENT', subject: '恭喜！ $PROJECT_NAME - Build # $BUILD_NUMBER - 构建成功!', to: "${EMAIL_LIST}"
             script {
-                def PROVIDER = readFile("${WORKSPACE}/pipeline/PROVIDER").split("\r?\n").each {
-                                    println it
-                               }
+                def PROVIDER = readFile("${WORKSPACE}/pipeline/PROVIDER").split("\r?\n").each{}
                 emailext body: '$DEFAULT_CONTENT', subject: '恭喜！ $PROJECT_NAME - Build # $BUILD_NUMBER - 构建成功!', to: "${PROVIDER[0]}"
             }
    		}
@@ -93,9 +92,7 @@ pipeline {
    			echo '流水线已被用户终止'
    			emailext body: '${JELLY_SCRIPT,template="html"}', subject: '已终止! $PROJECT_NAME - Build # $BUILD_NUMBER', to: "${EMAIL_LIST}"
             script {
-                def PROVIDER = readFile("${WORKSPACE}/pipeline/PROVIDER").split("\r?\n").each {
-                                    println it
-                               }
+                def PROVIDER = readFile("${WORKSPACE}/pipeline/PROVIDER").split("\r?\n").each {}
                 emailext body: '${JELLY_SCRIPT,template="html"}', subject: '已终止! $PROJECT_NAME - Build # $BUILD_NUMBER', to: "${PROVIDER[0]}"
             }
    		}
