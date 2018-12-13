@@ -10,8 +10,6 @@ print(sys.argv[0])
 imageName = sys.argv[1]
 imageNameSplit = imageName.split('/')
 
-#10.12.4.26:5000/user-images/test_dir:170
-
 # 打开数据库连接
 db = MySQLdb.connect("127.0.0.1", "root", "sangjing", "dataset", charset='utf8' )
 
