@@ -13,6 +13,8 @@ pipeline {
             steps {
 				echo '本次更新如下：'
 				sh 'echo `git log -1 --name-only |awk \'{{printf"%s,",$0}}\'|awk -F ",," \'{print$3}\'`'
+
+				sh 'cat Dockerfile | grep MAINTAINER | awk \'{print $2}\' > PROVIDER'
 				echo "文件路径：${WORKSPACE}"
 				echo "用户镜像存储路径：${JOB_BASE_NAME}/images"
 			}
@@ -23,7 +25,7 @@ pipeline {
                 dir('pipeline'){
                     script {
                         docker.withRegistry('http://10.12.4.26:5000') {
-                            sh 'git log -1 --name-only -- ../images/ | grep Dockerfile | awk -F \'/\' \'{print$2}\'| tr \'A-Z\' \'a-z\' > CHANGE_DIR'
+                            sh 'git log -1 --name-only -- | grep Dockerfile | awk -F \'/\' \'{print$2}\'| tr \'A-Z\' \'a-z\' > CHANGE_DIR'
                             def CHANGE_DIR = readFile("${WORKSPACE}/pipeline/CHANGE_DIR").split("\r?\n").each {
                                 println it
                             }
