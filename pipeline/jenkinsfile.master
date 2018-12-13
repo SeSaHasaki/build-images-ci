@@ -74,38 +74,32 @@ pipeline {
 		failure{
    			echo '流水线失败'
    			emailext body: '$DEFAULT_CONTENT', subject: '严重！ $DEFAULT_SUBJECT', to: "${EMAIL_LIST}"
-   			dir("${WORKSPACE}/pipeline"){
-                script {
-                    def PROVIDER = readFile("${WORKSPACE}/pipeline/PROVIDER").split("\r?\n").each {
-                                        println it
-                                   }
-                }
-   		    }
-   		    emailext body: '$DEFAULT_CONTENT', subject: '严重！ $DEFAULT_SUBJECT', to: "${PROVIDER[0]}"
+            script {
+                def PROVIDER = readFile("${WORKSPACE}/pipeline/PROVIDER").split("\r?\n").each {
+                                    println it
+                               }
+                emailext body: '$DEFAULT_CONTENT', subject: '严重！ $DEFAULT_SUBJECT', to: "${PROVIDER[0]}"
+            }
    		}
    		success{
    			echo '流水线成功'
    			emailext body: '$DEFAULT_CONTENT', subject: '恭喜！ $PROJECT_NAME - Build # $BUILD_NUMBER - 构建成功!', to: "${EMAIL_LIST}"
-   			dir("${WORKSPACE}/pipeline"){
-                script {
-                    def PROVIDER = readFile("${WORKSPACE}/pipeline/PROVIDER").split("\r?\n").each {
-                                        println it
-                                   }
-                }
-   		    }
-   		    emailext body: '$DEFAULT_CONTENT', subject: '恭喜！ $PROJECT_NAME - Build # $BUILD_NUMBER - 构建成功!', to: "${PROVIDER[0]}"
+            script {
+                def PROVIDER = readFile("${WORKSPACE}/pipeline/PROVIDER").split("\r?\n").each {
+                                    println it
+                               }
+                emailext body: '$DEFAULT_CONTENT', subject: '恭喜！ $PROJECT_NAME - Build # $BUILD_NUMBER - 构建成功!', to: "${PROVIDER[0]}"
+            }
    		}
    		aborted{
    			echo '流水线已被用户终止'
    			emailext body: '${JELLY_SCRIPT,template="html"}', subject: '已终止! $PROJECT_NAME - Build # $BUILD_NUMBER', to: "${EMAIL_LIST}"
-   			dir("${WORKSPACE}/pipeline"){
-                script {
-                    def PROVIDER = readFile("${WORKSPACE}/pipeline/PROVIDER").split("\r?\n").each {
-                                        println it
-                                   }
-                }
-   		    }
-   		    emailext body: '${JELLY_SCRIPT,template="html"}', subject: '已终止! $PROJECT_NAME - Build # $BUILD_NUMBER', to: "${PROVIDER[0]}"
+            script {
+                def PROVIDER = readFile("${WORKSPACE}/pipeline/PROVIDER").split("\r?\n").each {
+                                    println it
+                               }
+                emailext body: '${JELLY_SCRIPT,template="html"}', subject: '已终止! $PROJECT_NAME - Build # $BUILD_NUMBER', to: "${PROVIDER[0]}"
+            }
    		}
     }
 }
