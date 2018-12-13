@@ -79,8 +79,8 @@ pipeline {
                                     println it
                                }
    		    }
-   		}
    		    emailext body: '$DEFAULT_CONTENT', subject: '严重！ $DEFAULT_SUBJECT', to: "${PROVIDER[0]}"
+   		}
    		success{
    			echo '流水线成功'
    			emailext body: '$DEFAULT_CONTENT', subject: '恭喜！ $PROJECT_NAME - Build # $BUILD_NUMBER - 构建成功!', to: "${EMAIL_LIST}"
