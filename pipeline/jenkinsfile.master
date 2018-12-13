@@ -13,8 +13,6 @@ pipeline {
             steps {
 				echo '本次更新如下：'
 				sh 'echo `git log -1 --name-only |awk \'{{printf"%s,",$0}}\'|awk -F ",," \'{print$3}\'`'
-
-				sh 'cat Dockerfile | grep MAINTAINER | awk \'{print $2}\' > PROVIDER'
 				echo "文件路径：${WORKSPACE}"
 				echo "用户镜像存储路径：${JOB_BASE_NAME}/images"
 			}
@@ -31,6 +29,7 @@ pipeline {
                             }
                             if ("${CHANGE_DIR}" != '[]'){
                                 dir("${WORKSPACE}/images/${CHANGE_DIR[0]}"){
+                                    sh 'cat Dockerfile | grep MAINTAINER | awk \'{print $2}\' > PROVIDER'
                                     def imageName = "10.12.4.26:5000/user-images/${CHANGE_DIR[0]}:${BUILD_NUMBER}"
                                     def dockerFile = "-f Dockerfile ."
                                     docker.build(imageName,dockerFile).push()
@@ -38,8 +37,7 @@ pipeline {
                                 }
                             }
                             else{
-                                echo "本次更新无镜像产生，原因：无Dockerfile更新"
-                                sh 'exit 0'
+                                error '本次更新无镜像产生，原因：无Dockerfile更新'
                             }
                         }
                     }
