@@ -23,7 +23,7 @@ pipeline {
                 dir('pipeline'){
                     script {
                         docker.withRegistry('http://10.12.4.26:5000') {
-                            sh 'git log -1 --name-only -- ../images/ | grep Dockerfile | awk -F \'/\' \'{print$2}\' > CHANGE_DIR'
+                            sh 'git log -1 --name-only -- ../images/ | grep Dockerfile | awk -F \'/\' \'{print$2}\'| tr \'A-Z\' \'a-z\' > CHANGE_DIR'
                             def CHANGE_DIR = readFile("${WORKSPACE}/pipeline/CHANGE_DIR").split("\r?\n").each {
                                 println it
                             }
