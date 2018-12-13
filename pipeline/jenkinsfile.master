@@ -31,7 +31,7 @@ pipeline {
                             }
                             echo "改变文件夹：${CHANGE_DIR}？？"
                             dir("${WORKSPACE}/images/${CHANGE_DIR[0]}"){
-                                if ("${CHANGE_DIR}" != ''){
+                                if ("${CHANGE_DIR}" != '[]'){
                                     def imageName = "10.12.4.26:5000/user-images/${CHANGE_DIR[0]}:${BUILD_NUMBER}"
                                     def dockerFile = "-f Dockerfile ."
                                     docker.build(imageName,dockerFile).push()
