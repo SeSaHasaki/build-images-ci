@@ -29,7 +29,7 @@ pipeline {
                             }
                             if ("${CHANGE_DIR}" != '[]'){
                                 dir("${WORKSPACE}/images/${CHANGE_DIR[0]}"){
-                                    sh "cat Dockerfile | grep MAINTAINER | awk \'{print $2}\' > ${WORKSPACE}/pipeline/PROVIDER"
+                                    sh 'cat Dockerfile | grep MAINTAINER | awk \'{print $2}\' > ${WORKSPACE}/pipeline/PROVIDER'
                                     def imageName = "10.12.4.26:5000/user-images/${CHANGE_DIR[0]}:${BUILD_NUMBER}"
                                     def dockerFile = "-f Dockerfile ."
                                     docker.build(imageName,dockerFile).push()
