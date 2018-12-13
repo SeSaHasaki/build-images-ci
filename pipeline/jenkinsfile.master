@@ -29,17 +29,17 @@ pipeline {
                             def CHANGE_DIR = readFile("${WORKSPACE}/pipeline/CHANGE_DIR").split("\r?\n").each {
                                 println it
                             }
-                            echo "改变文件夹：${CHANGE_DIR}？？"
-                            dir("${WORKSPACE}/images/${CHANGE_DIR[0]}"){
-                                if ("${CHANGE_DIR}" != '[]'){
+                            if ("${CHANGE_DIR}" != '[]'){
+                                dir("${WORKSPACE}/images/${CHANGE_DIR[0]}"){
                                     def imageName = "10.12.4.26:5000/user-images/${CHANGE_DIR[0]}:${BUILD_NUMBER}"
                                     def dockerFile = "-f Dockerfile ."
                                     docker.build(imageName,dockerFile).push()
                                     echo "产生更新镜像，镜像名称：${imageName}"
                                 }
-                                else{
-                                    echo "本次更新无镜像产生，原因：无Dockerfile更新"
-                                }
+                            }
+                            else{
+                                echo "本次更新无镜像产生，原因：无Dockerfile更新"
+                                sh 'exit 0'
                             }
                         }
                     }
