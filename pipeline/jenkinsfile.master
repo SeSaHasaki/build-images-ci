@@ -30,6 +30,7 @@ pipeline {
                             if ("${CHANGE_DIR}" != '[]'){
                                 dir("${WORKSPACE}/images/${CHANGE_DIR[0]}"){
                                     sh 'cat Dockerfile | grep MAINTAINER | awk \'{print $2}\' > ${WORKSPACE}/pipeline/PROVIDER'
+                                    sh 'cat `ls | grep -i readme.md` | awk '{{printf"%s,",$0}} | head -1' > ${WORKSPACE}/pipeline/DESCRIPTION'
                                     def imageName = "10.12.4.26:5000/user-images/${CHANGE_DIR[0]}:${BUILD_NUMBER}"
                                     def dockerFile = "-f Dockerfile ."
                                     docker.build(imageName,dockerFile).push()
@@ -55,7 +56,8 @@ pipeline {
                         }
                         def imageName = "10.12.4.26:5000/user-images/${CHANGE_DIR[0]}:${BUILD_NUMBER}"
                         def PROVIDER = readFile("${WORKSPACE}/pipeline/PROVIDER").split("\r?\n").each{}
-                        sh "python update_mysql.py ${imageName} ${PROVIDER[0]}"
+                        def DESCRIPTION = readFile("${WORKSPACE}/pipeline/DESCRIPTION").split("\r?\n").each{}
+                        sh "python update_mysql.py ${imageName} ${PROVIDER[0]} ${DESCRIPTION[0]}"
                     }
 				}
 			}
