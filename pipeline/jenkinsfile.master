@@ -102,7 +102,7 @@ pipeline {
 		}
    		always {
 			echo '流水线已停止，开始清理临时文件'
-			sh 'rm -rf ${WORKSPACE}/pipeline/temp/'
+			//sh 'rm -rf ${WORKSPACE}/pipeline/temp/'
         }
     }
 }
