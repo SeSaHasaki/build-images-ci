@@ -28,7 +28,7 @@ pipeline {
                             sh 'echo "最近用户镜像目录：`cat ${WORKSPACE}/pipeline/temp/CHANGE_DIR_original`"'
                             def CHANGE_DIR_original = readFile("${WORKSPACE}/pipeline/temp/CHANGE_DIR_original").split("\r?\n").each {}
                             echo "本次用户镜像目录：${CHANGE_DIR_original[0]}"
-                            sh 'git log -5 --name-only -- | grep Dockerfile | awk -F \'/\' \'{print$2}\'| tr \'A-Z\' \'a-z\' > temp/CHANGE_DIR_lowercase'
+                            sh 'git log -5 --name-only -- | grep images | grep Dockerfile | awk -F \'/\' \'{print$2}\'| tr \'A-Z\' \'a-z\' > temp/CHANGE_DIR_lowercase'
                             def CHANGE_DIR_lowercase = readFile("${WORKSPACE}/pipeline/temp/CHANGE_DIR_lowercase").split("\r?\n").each {}
                             if ("${CHANGE_DIR_original}" != '[]'){
                                 dir("${WORKSPACE}/images/${CHANGE_DIR_original[0]}"){
