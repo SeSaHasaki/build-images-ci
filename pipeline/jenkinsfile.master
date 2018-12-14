@@ -35,20 +35,13 @@ pipeline {
                             if ("${CHANGE_DIR_original}" != '[]'){
                                 dir("${WORKSPACE}/images/${CHANGE_DIR_original[0]}"){
                                     sh 'cat Dockerfile | grep MAINTAINER | awk \'{print $2}\' > ${WORKSPACE}/pipeline/temp/PROVIDER'
-                                    sh 'export FLAG=`ls | grep -i readme.md &> /dev/null; if [ $? -eq 0 ];then echo 0;else echo 1; fi`'
-                                    //withEnv(['FLAG=${FLAG}"']) {
-                                        echo "变量：${FLAG}"
-                                   // }
-                                    echo "变量：${FLAG}"
-                                    //if ($? -eq 0){
-                                    if ("${FLAG}" == (0)){
                                     //if (fileExists ('readme.md')){
                                         sh 'cat `ls | grep -i readme.md` | head -3 | awk \'{{printf"%s,",$0}}\' > ${WORKSPACE}/pipeline/temp/DESCRIPTION'
-                                    }else{
-                                        def PROVIDER = readFile("${WORKSPACE}/pipeline/temp/PROVIDER").split("\r?\n").each{}
-                                        emailext body: '$DEFAULT_CONTENT', subject: '缺少Readme文件！ $DEFAULT_SUBJECT', to: "${PROVIDER[0]}"
-                                        error '缺少Readme文件'
-                                    }
+                                    //}else{
+                                    //    def PROVIDER = readFile("${WORKSPACE}/pipeline/temp/PROVIDER").split("\r?\n").each{}
+                                    //    emailext body: '${SCRIPT,template="Providers-Notification.template"}', recipientProviders: [[$class: 'DevelopersRecipientProvider']], subject: '缺少Readme文件！ $DEFAULT_SUBJECT', to:"${PROVIDER[0]}"
+                                    //    error '缺少Readme文件'
+                                   //}
                                     def imageName = "10.12.4.26:5000/user-images/${CHANGE_DIR_lowercase[0]}:${BUILD_NUMBER}"
                                     def dockerFile = "-f Dockerfile ."
                                     docker.build(imageName,dockerFile).push()
@@ -99,7 +92,8 @@ pipeline {
                 def CHANGE_DIR_original = readFile("${WORKSPACE}/pipeline/temp/CHANGE_DIR_original").split("\r?\n").each {}
                 if ("${CHANGE_DIR_original}" != '[]'){
                     def PROVIDER = readFile("${WORKSPACE}/pipeline/temp/PROVIDER").split("\r?\n").each{}
-                    emailext body: '$DEFAULT_CONTENT', subject: '失败！ $DEFAULT_SUBJECT', to: "${PROVIDER[0]}"
+                    //emailext body: '$DEFAULT_CONTENT', subject: '失败！ $DEFAULT_SUBJECT', to: "${PROVIDER[0]}"
+                    emailext body: '${SCRIPT,template="Providers-Notification.template"}', recipientProviders: [[$class: 'DevelopersRecipientProvider']], subject: '失败！ $DEFAULT_SUBJECT', to:"${PROVIDER[0]}"
                     emailext body: '$DEFAULT_CONTENT', subject: '失败！ $DEFAULT_SUBJECT', to: "${EMAIL_LIST}"
                 }
                 else{
@@ -112,7 +106,7 @@ pipeline {
    			emailext body: '$DEFAULT_CONTENT', subject: '恭喜！ $PROJECT_NAME - Build # $BUILD_NUMBER - 构建成功!', to: "${EMAIL_LIST}"
             script {
                 def PROVIDER = readFile("${WORKSPACE}/pipeline/temp/PROVIDER").split("\r?\n").each{}
-                emailext body: '$DEFAULT_CONTENT', subject: '恭喜！ $PROJECT_NAME - Build # $BUILD_NUMBER - 构建成功!', to: "${PROVIDER[0]}"
+                emailext body: '${SCRIPT,template="Providers-Notification.template"}', recipientProviders: [[$class: 'DevelopersRecipientProvider']], subject: '恭喜！ $DEFAULT_SUBJECT', to:"${PROVIDER[0]}"
             }
    		}
    		aborted{
@@ -120,7 +114,7 @@ pipeline {
    			emailext body: '${JELLY_SCRIPT,template="html"}', subject: '已终止! $PROJECT_NAME - Build # $BUILD_NUMBER', to: "${EMAIL_LIST}"
             script {
                 def PROVIDER = readFile("${WORKSPACE}/pipeline/temp/PROVIDER").split("\r?\n").each {}
-                emailext body: '${JELLY_SCRIPT,template="html"}', subject: '已终止! $PROJECT_NAME - Build # $BUILD_NUMBER', to: "${PROVIDER[0]}"
+                emailext body: '${SCRIPT,template="Providers-Notification.template"}', recipientProviders: [[$class: 'DevelopersRecipientProvider']], subject: '已终止！ $DEFAULT_SUBJECT', to:"${PROVIDER[0]}"
             }
    		}
         cleanup {
