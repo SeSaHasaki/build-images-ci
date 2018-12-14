@@ -31,6 +31,7 @@ pipeline {
                             if ("${CHANGE_DIR_original}" != '[]'){
                                 dir("${WORKSPACE}/images/${CHANGE_DIR_original[0]}"){
                                     sh 'cat Dockerfile | grep MAINTAINER | awk \'{print $2}\' > ${WORKSPACE}/pipeline/temp/PROVIDER'
+                                    sh 'echo "镜像制作人：`cat ${WORKSPACE}/pipeline/temp/PROVIDER`"'
                                     //if (fileExists ('readme.md')){
                                         sh 'cat `ls | grep -i readme.md` | head -3 | awk \'{{printf"%s,",$0}}\' > ${WORKSPACE}/pipeline/temp/DESCRIPTION'
                                     //}else{
