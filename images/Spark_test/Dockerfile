@@ -1,6 +1,6 @@
 FROM ubuntu:16.04
 
-MAINTAINER 814537706@qq.com
+MAINTAINER sangjing@leinao.ai
 
 RUN sed -i 's/archive.ubuntu.com/mirrors.ustc.edu.cn/g' /etc/apt/sources.list && \
     apt update && \
