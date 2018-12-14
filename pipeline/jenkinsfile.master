@@ -86,7 +86,7 @@ pipeline {
                 def CHANGE_DIR_original = readFile("${WORKSPACE}/pipeline/temp/CHANGE_DIR_original").split("\r?\n").each {}
                 def PROVIDER = readFile("${WORKSPACE}/pipeline/temp/PROVIDER").split("\r?\n").each{}
                 if ("${CHANGE_DIR_original}" != '[]'){
-                    emailext body: '${SCRIPT,template="Providers-Notification.template"}', recipientProviders: [[$class: 'DevelopersRecipientProvider']], subject: '失败！ $DEFAULT_SUBJECT', to:"${PROVIDER[0]}"
+                    emailext body: '$DEFAULT_CONTENT', subject: '失败！ $DEFAULT_SUBJECT', to: "${PROVIDER[0]}"
                     emailext body: '$DEFAULT_CONTENT', subject: '失败！ $DEFAULT_SUBJECT', to: "${EMAIL_LIST}"
                 }
                 else{
@@ -99,7 +99,7 @@ pipeline {
    			emailext body: '$DEFAULT_CONTENT', subject: '恭喜！ $PROJECT_NAME - Build # $BUILD_NUMBER - 构建成功!', to: "${EMAIL_LIST}"
             script {
                 def PROVIDER = readFile("${WORKSPACE}/pipeline/temp/PROVIDER").split("\r?\n").each{}
-                emailext body: '${SCRIPT,template="Providers-Notification.template"}', recipientProviders: [[$class: 'DevelopersRecipientProvider']], subject: '恭喜！ $DEFAULT_SUBJECT', to:"${PROVIDER[0]}"
+                emailext body: '$DEFAULT_CONTENT', subject: '恭喜！ $DEFAULT_SUBJECT', to: "${PROVIDER[0]}"
             }
    		}
    		aborted{
@@ -107,7 +107,7 @@ pipeline {
    			emailext body: '$DEFAULT_CONTENT', subject: '已终止！ $DEFAULT_SUBJECT', to: "${EMAIL_LIST}"
             script {
                 def PROVIDER = readFile("${WORKSPACE}/pipeline/temp/PROVIDER").split("\r?\n").each {}
-                emailext body: '${SCRIPT,template="Providers-Notification.template"}', recipientProviders: [[$class: 'DevelopersRecipientProvider']], subject: '已终止！ $DEFAULT_SUBJECT', to:"${PROVIDER[0]}"
+                emailext body: '$DEFAULT_CONTENT', subject: '已终止！ $DEFAULT_SUBJECT', to: "${PROVIDER[0]}"
             }
    		}
         cleanup {
