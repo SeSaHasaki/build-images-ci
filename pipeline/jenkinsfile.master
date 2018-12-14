@@ -12,7 +12,7 @@ pipeline {
 		stage('代码检查') {
             steps {
 				echo '本次更新如下：'
-				sh 'echo `git log -1 --name-only |awk \'{{printf"%s,",$0}}\' | awk -F ",," \'{print$3}\'`'
+				sh 'echo `git log -2 --name-only |awk \'{{printf"%s,",$0}}\' | awk -F ",," \'{print$3}\'`'
 				echo "文件路径：${WORKSPACE}"
 				echo "用户镜像存储路径：${JOB_BASE_NAME}/images"
 				sh 'mkdir ${WORKSPACE}/pipeline/temp'
@@ -24,14 +24,10 @@ pipeline {
                 dir('pipeline'){
                     script {
                         docker.withRegistry('http://10.12.4.26:5000') {
-                            sh 'git log -1 --name-only -- | grep Dockerfile | awk -F \'/\' \'{print$2}\' > temp/CHANGE_DIR_original'
-                            def CHANGE_DIR_original = readFile("${WORKSPACE}/pipeline/temp/CHANGE_DIR_original").split("\r?\n").each {
-                                println it
-                            }
-                            sh 'git log -1 --name-only -- | grep Dockerfile | awk -F \'/\' \'{print$2}\'| tr \'A-Z\' \'a-z\' > temp/CHANGE_DIR_lowercase'
-                            def CHANGE_DIR_lowercase = readFile("${WORKSPACE}/pipeline/temp/CHANGE_DIR_lowercase").split("\r?\n").each {
-                                println it
-                            }
+                            sh 'git log -2 --name-only -- | grep Dockerfile | awk -F \'/\' \'{print$2}\' > temp/CHANGE_DIR_original'
+                            def CHANGE_DIR_original = readFile("${WORKSPACE}/pipeline/temp/CHANGE_DIR_original").split("\r?\n").each {}
+                            sh 'git log -2 --name-only -- | grep Dockerfile | awk -F \'/\' \'{print$2}\'| tr \'A-Z\' \'a-z\' > temp/CHANGE_DIR_lowercase'
+                            def CHANGE_DIR_lowercase = readFile("${WORKSPACE}/pipeline/temp/CHANGE_DIR_lowercase").split("\r?\n").each {}
                             if ("${CHANGE_DIR_original}" != '[]'){
                                 dir("${WORKSPACE}/images/${CHANGE_DIR_original[0]}"){
                                     sh 'cat Dockerfile | grep MAINTAINER | awk \'{print $2}\' > ${WORKSPACE}/pipeline/temp/PROVIDER'
@@ -62,9 +58,7 @@ pipeline {
                 dir("${WORKSPACE}/pipeline"){
                 echo '更新数据库'
                     script {
-                        def CHANGE_DIR_lowercase = readFile("${WORKSPACE}/pipeline/temp/CHANGE_DIR_lowercase").split("\r?\n").each {
-                                println it
-                        }
+                        def CHANGE_DIR_lowercase = readFile("${WORKSPACE}/pipeline/temp/CHANGE_DIR_lowercase").split("\r?\n").each {}
                         def imageName = "10.12.4.26:5000/user-images/${CHANGE_DIR_lowercase[0]}:${BUILD_NUMBER}"
                         def PROVIDER = readFile("${WORKSPACE}/pipeline/temp/PROVIDER").split("\r?\n").each{}
                         def DESCRIPTION = readFile("${WORKSPACE}/pipeline/temp/DESCRIPTION").split("\r?\n").each{}
@@ -109,7 +103,7 @@ pipeline {
    		}
    		aborted{
    			echo '流水线已被用户终止'
-   			emailext body: '${JELLY_SCRIPT,template="html"}', subject: '已终止! $PROJECT_NAME - Build # $BUILD_NUMBER', to: "${EMAIL_LIST}"
+   			emailext body: '$DEFAULT_CONTENT', subject: '已终止！ $DEFAULT_SUBJECT', to: "${EMAIL_LIST}"
             script {
                 def PROVIDER = readFile("${WORKSPACE}/pipeline/temp/PROVIDER").split("\r?\n").each {}
                 emailext body: '${SCRIPT,template="Providers-Notification.template"}', recipientProviders: [[$class: 'DevelopersRecipientProvider']], subject: '已终止！ $DEFAULT_SUBJECT', to:"${PROVIDER[0]}"
