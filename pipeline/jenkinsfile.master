@@ -12,9 +12,10 @@ pipeline {
 		stage('代码检查') {
             steps {
 				echo '本次更新如下：'
-				sh 'echo `git log -1 --name-only |awk \'{{printf"%s,",$0}}\'|awk -F ",," \'{print$3}\'`'
+				sh 'echo `git log -1 --name-only |awk \'{{printf"%s,",$0}}\' | awk -F ",," \'{print$3}\'`'
 				echo "文件路径：${WORKSPACE}"
 				echo "用户镜像存储路径：${JOB_BASE_NAME}/images"
+				sh 'mkdir ${WORKSPACE}/pipeline/temp'
 			}
         }
 
@@ -23,15 +24,19 @@ pipeline {
                 dir('pipeline'){
                     script {
                         docker.withRegistry('http://10.12.4.26:5000') {
-                            sh 'git log -1 --name-only -- | grep Dockerfile | awk -F \'/\' \'{print$2}\'| tr \'A-Z\' \'a-z\' > CHANGE_DIR'
-                            def CHANGE_DIR = readFile("${WORKSPACE}/pipeline/CHANGE_DIR").split("\r?\n").each {
+                            sh 'git log -1 --name-only -- | grep Dockerfile | awk -F \'/\' \'{print$2}\'| tr \'A-Z\' \'a-z\' > temp/CHANGE_DIR_original'
+                            def CHANGE_DIR_original = readFile("${WORKSPACE}/pipeline/CHANGE_DIR_original").split("\r?\n").each {
                                 println it
                             }
-                            if ("${CHANGE_DIR}" != '[]'){
-                                dir("${WORKSPACE}/images/${CHANGE_DIR[0]}"){
-                                    sh 'cat Dockerfile | grep MAINTAINER | awk \'{print $2}\' > ${WORKSPACE}/pipeline/PROVIDER'
-                                    sh 'cat `ls | grep -i readme.md` | awk '{{printf"%s,",$0}} | head -1' > ${WORKSPACE}/pipeline/DESCRIPTION'
-                                    def imageName = "10.12.4.26:5000/user-images/${CHANGE_DIR[0]}:${BUILD_NUMBER}"
+                            sh 'git log -1 --name-only -- | grep Dockerfile | awk -F \'/\' \'{print$2}\'| tr \'A-Z\' \'a-z\' > temp/CHANGE_DIR_lowercase'
+                            def CHANGE_DIR_lowercase = readFile("${WORKSPACE}/pipeline/CHANGE_DIR_lowercase").split("\r?\n").each {
+                                println it
+                            }
+                            if ("${CHANGE_DIR_original}" != '[]'){
+                                dir("${WORKSPACE}/images/${CHANGE_DIR_original[0]}"){
+                                    sh 'cat Dockerfile | grep MAINTAINER | awk \'{print $2}\' > ${WORKSPACE}/pipeline/temp/PROVIDER'
+                                    sh 'cat `ls | grep -i readme.md` | awk \'{{printf"%s,",$0}}\' | head -1' > ${WORKSPACE}/pipeline/temp/DESCRIPTION'
+                                    def imageName = "10.12.4.26:5000/user-images/${CHANGE_DIR_lowercase[0]}:${BUILD_NUMBER}"
                                     def dockerFile = "-f Dockerfile ."
                                     docker.build(imageName,dockerFile).push()
                                     echo "产生更新镜像，镜像名称：${imageName}"
@@ -51,12 +56,12 @@ pipeline {
                 dir("${WORKSPACE}/pipeline"){
                 echo '更新数据库'
                     script {
-                        def CHANGE_DIR = readFile("${WORKSPACE}/pipeline/CHANGE_DIR").split("\r?\n").each {
+                        def CHANGE_DIR_lowercase = readFile("${WORKSPACE}/pipeline/temp/CHANGE_DIR_lowercase").split("\r?\n").each {
                                 println it
                         }
-                        def imageName = "10.12.4.26:5000/user-images/${CHANGE_DIR[0]}:${BUILD_NUMBER}"
-                        def PROVIDER = readFile("${WORKSPACE}/pipeline/PROVIDER").split("\r?\n").each{}
-                        def DESCRIPTION = readFile("${WORKSPACE}/pipeline/DESCRIPTION").split("\r?\n").each{}
+                        def imageName = "10.12.4.26:5000/user-images/${CHANGE_DIR_lowercase[0]}:${BUILD_NUMBER}"
+                        def PROVIDER = readFile("${WORKSPACE}/pipeline/temp/PROVIDER").split("\r?\n").each{}
+                        def DESCRIPTION = readFile("${WORKSPACE}/pipeline/temp/DESCRIPTION").split("\r?\n").each{}
                         sh "python update_mysql.py ${imageName} ${PROVIDER[0]} ${DESCRIPTION[0]}"
                     }
 				}
@@ -66,7 +71,8 @@ pipeline {
 
 	post {
         always {
-			echo '流水线已停止'
+			echo '流水线已停止，开始清理临时文件'
+			sh 'rm -rf ${WORKSPACE}/pipeline/temp/'
         }
 		changed{
 			echo '流水线状态已改变'
