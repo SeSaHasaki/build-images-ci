@@ -25,8 +25,9 @@ pipeline {
                     script {
                         docker.withRegistry('http://10.12.4.26:5000') {
                             sh 'git log -5 --name-only -- | grep Dockerfile | awk -F \'/\' \'{print$2}\' > temp/CHANGE_DIR_original'
-                            sh 'echo "用户镜像目录：`cat ${WORKSPACE}/pipeline/temp/CHANGE_DIR_original`"'
+                            sh 'echo "最近用户镜像目录：`cat ${WORKSPACE}/pipeline/temp/CHANGE_DIR_original`"'
                             def CHANGE_DIR_original = readFile("${WORKSPACE}/pipeline/temp/CHANGE_DIR_original").split("\r?\n").each {}
+                            echo "本次用户镜像目录：${CHANGE_DIR_original[0]}"
                             sh 'git log -5 --name-only -- | grep Dockerfile | awk -F \'/\' \'{print$2}\'| tr \'A-Z\' \'a-z\' > temp/CHANGE_DIR_lowercase'
                             def CHANGE_DIR_lowercase = readFile("${WORKSPACE}/pipeline/temp/CHANGE_DIR_lowercase").split("\r?\n").each {}
                             if ("${CHANGE_DIR_original}" != '[]'){
