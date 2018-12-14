@@ -70,16 +70,6 @@ pipeline {
     }
 
 	post {
-        always {
-			echo '流水线已停止，开始清理临时文件'
-			sh 'rm -rf ${WORKSPACE}/pipeline/temp/'
-        }
-		changed{
-			echo '流水线状态已改变'
-		}
-		unstable{
-			echo '流水线不稳定'
-		}
 		failure{
    			echo '流水线失败'
    			emailext body: '$DEFAULT_CONTENT', subject: '严重！ $DEFAULT_SUBJECT', to: "${EMAIL_LIST}"
@@ -104,5 +94,15 @@ pipeline {
                 emailext body: '${JELLY_SCRIPT,template="html"}', subject: '已终止! $PROJECT_NAME - Build # $BUILD_NUMBER', to: "${PROVIDER[0]}"
             }
    		}
+		changed{
+			echo '流水线状态已改变'
+		}
+		unstable{
+			echo '流水线不稳定'
+		}
+   		always {
+			echo '流水线已停止，开始清理临时文件'
+			sh 'rm -rf ${WORKSPACE}/pipeline/temp/'
+        }
     }
 }
