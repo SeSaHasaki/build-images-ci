@@ -63,7 +63,7 @@ pipeline {
                         def PROVIDER = readFile("${WORKSPACE}/pipeline/temp/PROVIDER").split("\r?\n").each{}
                         def DESCRIPTION = readFile("${WORKSPACE}/pipeline/temp/DESCRIPTION").split("\r?\n").each{}
                         echo "镜像描述：${DESCRIPTION}"
-                        sh "python update_mysql.py ${imageName} ${PROVIDER[0]} ${DESCRIPTION[0]}"
+                        sh "python update_mysql.py ${imageName} ${PROVIDER[0]} ${DESCRIPTION}"
                     }
 				}
 			}
