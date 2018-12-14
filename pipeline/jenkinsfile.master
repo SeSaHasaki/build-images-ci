@@ -107,7 +107,9 @@ pipeline {
             script {
                 def PROVIDER = readFile("${WORKSPACE}/pipeline/temp/PROVIDER").split("\r?\n").each{}
                 emailext body: '${SCRIPT,template="Providers-Notification.template"}', recipientProviders: [[$class: 'DevelopersRecipientProvider']], subject: '恭喜！ $DEFAULT_SUBJECT', to:"${PROVIDER[0]}"
+                emailext body: '${JELLY_SCRIPT,template="jelly"}', recipientProviders: [[$class: 'DevelopersRecipientProvider']], subject: '恭喜！ $DEFAULT_SUBJECT', to:"${PROVIDER[0]}"
             }
+   		}
    		}
    		aborted{
    			echo '流水线已被用户终止'
