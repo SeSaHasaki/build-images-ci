@@ -36,7 +36,7 @@ pipeline {
                                 dir("${WORKSPACE}/images/${CHANGE_DIR_original[0]}"){
                                     sh 'cat Dockerfile | grep MAINTAINER | awk \'{print $2}\' > ${WORKSPACE}/pipeline/temp/PROVIDER'
                                     sh 'export FLAG=`ls | grep -i readme.md &> /dev/null; if [ $? -eq 0 ];then echo 0;else echo 1; fi`'
-                                    if (${FLAG} -eq (0)){
+                                    if ("${FLAG}" -eq (0)){
                                     //if (fileExists ('readme.md')){
                                         sh 'cat `ls | grep -i readme.md` | head -3 | awk \'{{printf"%s,",$0}}\' > ${WORKSPACE}/pipeline/temp/DESCRIPTION'
                                     }else{
