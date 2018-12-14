@@ -35,9 +35,13 @@ pipeline {
                             if ("${CHANGE_DIR_original}" != '[]'){
                                 dir("${WORKSPACE}/images/${CHANGE_DIR_original[0]}"){
                                     sh 'cat Dockerfile | grep MAINTAINER | awk \'{print $2}\' > ${WORKSPACE}/pipeline/temp/PROVIDER'
-                                    if (fileExists ('readme.md')){
+                                    sh 'ls | grep -i readme.md ; if [ $? -eq 0  ];then exit(0) ;else exit(1); fi'
+                                    if ($? -eq 0){
+                                    //if (fileExists ('readme.md')){
                                         sh 'cat `ls | grep -i readme.md` | head -3 | awk \'{{printf"%s,",$0}}\' > ${WORKSPACE}/pipeline/temp/DESCRIPTION'
                                     }else{
+                                        def PROVIDER = readFile("${WORKSPACE}/pipeline/temp/PROVIDER").split("\r?\n").each{}
+                                        emailext body: '$DEFAULT_CONTENT', subject: '缺少Readme文件！ $DEFAULT_SUBJECT', to: "${PROVIDER[0]}"
                                         error '缺少Readme文件'
                                     }
                                     def imageName = "10.12.4.26:5000/user-images/${CHANGE_DIR_lowercase[0]}:${BUILD_NUMBER}"
