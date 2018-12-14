@@ -75,8 +75,14 @@ pipeline {
    			echo '流水线失败'
    			emailext body: '$DEFAULT_CONTENT', subject: '严重！ $DEFAULT_SUBJECT', to: "${EMAIL_LIST}"
             script {
-                def PROVIDER = readFile("${WORKSPACE}/pipeline/temp/PROVIDER").split("\r?\n").each{}
-                emailext body: '$DEFAULT_CONTENT', subject: '严重！ $DEFAULT_SUBJECT', to: "${PROVIDER[0]}"
+                def CHANGE_DIR_original = readFile("${WORKSPACE}/pipeline/temp/CHANGE_DIR_original").split("\r?\n").each {}
+                if ("${CHANGE_DIR_original}" != '[]'){
+                    def PROVIDER = readFile("${WORKSPACE}/pipeline/temp/PROVIDER").split("\r?\n").each{}
+                    emailext body: '$DEFAULT_CONTENT', subject: '严重！ $DEFAULT_SUBJECT', to: "${PROVIDER[0]}"
+                }
+                else{
+                    emailext body: '$DEFAULT_CONTENT', subject: '本次更新无镜像产生，无Dockerfile更新 $DEFAULT_SUBJECT', to: "${EMAIL_LIST}"
+                }
             }
    		}
    		success{
