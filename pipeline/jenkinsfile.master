@@ -35,7 +35,7 @@ pipeline {
                             if ("${CHANGE_DIR_original}" != '[]'){
                                 dir("${WORKSPACE}/images/${CHANGE_DIR_original[0]}"){
                                     sh 'cat Dockerfile | grep MAINTAINER | awk \'{print $2}\' > ${WORKSPACE}/pipeline/temp/PROVIDER'
-                                    if (fileExists 'readme.md'){
+                                    if (fileExists '${WORKSPACE}/images/${CHANGE_DIR_original[0]}/readme.md'){
                                         sh 'cat `ls | grep -i readme.md` | head -3 | awk \'{{printf"%s,",$0}}\' > ${WORKSPACE}/pipeline/temp/DESCRIPTION'
                                     }else{
                                         error '缺少Readme文件'
@@ -75,6 +75,15 @@ pipeline {
     }
 
 	post {
+	   	always {
+			echo '流水线已停止，'
+        }
+        changed{
+			echo '流水线状态已改变'
+		}
+		unstable{
+			echo '流水线不稳定'
+		}
 		failure{
    			echo '流水线失败'
             script {
@@ -88,7 +97,6 @@ pipeline {
                     emailext body: '$DEFAULT_CONTENT', subject: '本次更新无镜像产生，无Dockerfile更新 $DEFAULT_SUBJECT', to: "${EMAIL_LIST}"
                 }
             }
-            sh 'rm -rf ${WORKSPACE}/pipeline/temp/'
    		}
    		success{
    			echo '流水线成功'
@@ -97,7 +105,6 @@ pipeline {
                 def PROVIDER = readFile("${WORKSPACE}/pipeline/temp/PROVIDER").split("\r?\n").each{}
                 emailext body: '$DEFAULT_CONTENT', subject: '恭喜！ $PROJECT_NAME - Build # $BUILD_NUMBER - 构建成功!', to: "${PROVIDER[0]}"
             }
-            sh 'rm -rf ${WORKSPACE}/pipeline/temp/'
    		}
    		aborted{
    			echo '流水线已被用户终止'
@@ -106,16 +113,10 @@ pipeline {
                 def PROVIDER = readFile("${WORKSPACE}/pipeline/temp/PROVIDER").split("\r?\n").each {}
                 emailext body: '${JELLY_SCRIPT,template="html"}', subject: '已终止! $PROJECT_NAME - Build # $BUILD_NUMBER', to: "${PROVIDER[0]}"
             }
-            sh 'rm -rf ${WORKSPACE}/pipeline/temp/'
    		}
-		changed{
-			echo '流水线状态已改变'
-		}
-		unstable{
-			echo '流水线不稳定'
-		}
-   		always {
-			echo '流水线已停止，开始清理临时文件'
+        cleanup {
+            echo '开始清理临时文件'
+            sh 'rm -rf ${WORKSPACE}/pipeline/temp/'
         }
     }
 }
