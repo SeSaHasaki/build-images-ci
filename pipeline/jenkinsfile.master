@@ -84,6 +84,7 @@ pipeline {
                     emailext body: '$DEFAULT_CONTENT', subject: '本次更新无镜像产生，无Dockerfile更新 $DEFAULT_SUBJECT', to: "${EMAIL_LIST}"
                 }
             }
+            sh 'rm -rf ${WORKSPACE}/pipeline/temp/'
    		}
    		success{
    			echo '流水线成功'
@@ -92,6 +93,7 @@ pipeline {
                 def PROVIDER = readFile("${WORKSPACE}/pipeline/temp/PROVIDER").split("\r?\n").each{}
                 emailext body: '$DEFAULT_CONTENT', subject: '恭喜！ $PROJECT_NAME - Build # $BUILD_NUMBER - 构建成功!', to: "${PROVIDER[0]}"
             }
+            sh 'rm -rf ${WORKSPACE}/pipeline/temp/'
    		}
    		aborted{
    			echo '流水线已被用户终止'
@@ -100,6 +102,7 @@ pipeline {
                 def PROVIDER = readFile("${WORKSPACE}/pipeline/temp/PROVIDER").split("\r?\n").each {}
                 emailext body: '${JELLY_SCRIPT,template="html"}', subject: '已终止! $PROJECT_NAME - Build # $BUILD_NUMBER', to: "${PROVIDER[0]}"
             }
+            sh 'rm -rf ${WORKSPACE}/pipeline/temp/'
    		}
 		changed{
 			echo '流水线状态已改变'
@@ -109,7 +112,6 @@ pipeline {
 		}
    		always {
 			echo '流水线已停止，开始清理临时文件'
-			sh 'rm -rf ${WORKSPACE}/pipeline/temp/'
         }
     }
 }
