@@ -35,7 +35,7 @@ pipeline {
                             if ("${CHANGE_DIR_original}" != '[]'){
                                 dir("${WORKSPACE}/images/${CHANGE_DIR_original[0]}"){
                                     sh 'cat Dockerfile | grep MAINTAINER | awk \'{print $2}\' > ${WORKSPACE}/pipeline/temp/PROVIDER'
-                                    sh 'cat `ls | grep -i readme.md` | awk \'{{printf"%s,",$0}}\' | head -1' > ${WORKSPACE}/pipeline/temp/DESCRIPTION'
+                                    sh 'cat `ls | grep -i readme.md` | awk \'{{printf"%s,",$0}}\' | head -1 > ${WORKSPACE}/pipeline/temp/DESCRIPTION'
                                     def imageName = "10.12.4.26:5000/user-images/${CHANGE_DIR_lowercase[0]}:${BUILD_NUMBER}"
                                     def dockerFile = "-f Dockerfile ."
                                     docker.build(imageName,dockerFile).push()
