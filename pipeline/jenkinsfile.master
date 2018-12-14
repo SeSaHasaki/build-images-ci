@@ -39,16 +39,16 @@ pipeline {
                                     //withEnv(['FLAG=${FLAG}"']) {
                                         echo "变量：${FLAG}"
                                    // }
-                                    echo "${FLAG}"
+                                    echo "变量：${FLAG}"
                                     //if ($? -eq 0){
-                                    //if ("${FLAG}" == (0)){
+                                    if ("${FLAG}" == (0)){
                                     //if (fileExists ('readme.md')){
                                         sh 'cat `ls | grep -i readme.md` | head -3 | awk \'{{printf"%s,",$0}}\' > ${WORKSPACE}/pipeline/temp/DESCRIPTION'
-                                   // }else{
-                                   //     def PROVIDER = readFile("${WORKSPACE}/pipeline/temp/PROVIDER").split("\r?\n").each{}
-                                   //     emailext body: '$DEFAULT_CONTENT', subject: '缺少Readme文件！ $DEFAULT_SUBJECT', to: "${PROVIDER[0]}"
-                                   //     error '缺少Readme文件'
-                                   // }
+                                    }else{
+                                        def PROVIDER = readFile("${WORKSPACE}/pipeline/temp/PROVIDER").split("\r?\n").each{}
+                                        emailext body: '$DEFAULT_CONTENT', subject: '缺少Readme文件！ $DEFAULT_SUBJECT', to: "${PROVIDER[0]}"
+                                        error '缺少Readme文件'
+                                    }
                                     def imageName = "10.12.4.26:5000/user-images/${CHANGE_DIR_lowercase[0]}:${BUILD_NUMBER}"
                                     def dockerFile = "-f Dockerfile ."
                                     docker.build(imageName,dockerFile).push()
