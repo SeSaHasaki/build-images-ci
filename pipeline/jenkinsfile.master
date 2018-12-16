@@ -5,14 +5,14 @@ pipeline {
         EMAIL_LIST='sangjing@leinao.ai'
     }
 	options {
-        timeout(time: 15, unit: 'MINUTES')
+        timeout(time: 12, unit: 'HOURS')
 		buildDiscarder(logRotator(numToKeepStr: '30'))
     }
     stages {
 		stage('代码检查') {
             steps {
-				echo '本次更新如下：'
-				sh 'echo `git log -1 --name-only |awk \'{{printf"%s,",$0}}\' | awk -F ",," \'{print$3}\'`'
+				echo '本次Dockerfile更新如下：'
+				sh 'echo "`git log -5 --stat --name-only | grep images | grep Dockerfile`"'
 				echo "文件路径：${WORKSPACE}"
 				echo "用户镜像存储路径：${JOB_BASE_NAME}/images"
 				sh 'mkdir ${WORKSPACE}/pipeline/temp'
@@ -24,19 +24,19 @@ pipeline {
                 dir('pipeline'){
                     script {
                         docker.withRegistry('http://10.12.4.26:5000') {
-                            sh 'git log -1 --name-only -- | grep Dockerfile | awk -F \'/\' \'{print$2}\' > temp/CHANGE_DIR_original'
-                            def CHANGE_DIR_original = readFile("${WORKSPACE}/pipeline/temp/CHANGE_DIR_original").split("\r?\n").each {
-                                println it
-                            }
-                            sh 'git log -1 --name-only -- | grep Dockerfile | awk -F \'/\' \'{print$2}\'| tr \'A-Z\' \'a-z\' > temp/CHANGE_DIR_lowercase'
-                            def CHANGE_DIR_lowercase = readFile("${WORKSPACE}/pipeline/temp/CHANGE_DIR_lowercase").split("\r?\n").each {
-                                println it
-                            }
+                            sh 'git log -5 --name-only -- | grep images | grep Dockerfile | awk -F \'/\' \'{print$2}\' > temp/CHANGE_DIR_original'
+                            sh 'echo "最近用户镜像目录：`cat ${WORKSPACE}/pipeline/temp/CHANGE_DIR_original`"'
+                            def CHANGE_DIR_original = readFile("${WORKSPACE}/pipeline/temp/CHANGE_DIR_original").split("\r?\n").each {}
+                            echo "本次用户镜像目录：${CHANGE_DIR_original[0]}"
+                            sh 'git log -5 --name-only -- | grep images | grep Dockerfile | awk -F \'/\' \'{print$2}\'| tr \'A-Z\' \'a-z\' > temp/CHANGE_DIR_lowercase'
+                            def CHANGE_DIR_lowercase = readFile("${WORKSPACE}/pipeline/temp/CHANGE_DIR_lowercase").split("\r?\n").each {}
                             if ("${CHANGE_DIR_original}" != '[]'){
                                 dir("${WORKSPACE}/images/${CHANGE_DIR_original[0]}"){
                                     sh 'cat Dockerfile | grep MAINTAINER | awk \'{print $2}\' > ${WORKSPACE}/pipeline/temp/PROVIDER'
+                                    sh 'echo "镜像制作人：`cat ${WORKSPACE}/pipeline/temp/PROVIDER`"'
                                     //if (fileExists ('readme.md')){
                                         sh 'cat `ls | grep -i readme.md` | head -3 | awk \'{{printf"%s,",$0}}\' > ${WORKSPACE}/pipeline/temp/DESCRIPTION'
+                                        sh 'sed -i "/./{s/^/\'/;s/$/\'/}" ${WORKSPACE}/pipeline/temp/DESCRIPTION'
                                     //}else{
                                     //    def PROVIDER = readFile("${WORKSPACE}/pipeline/temp/PROVIDER").split("\r?\n").each{}
                                     //    emailext body: '${SCRIPT,template="Providers-Notification.template"}', recipientProviders: [[$class: 'DevelopersRecipientProvider']], subject: '缺少Readme文件！ $DEFAULT_SUBJECT', to:"${PROVIDER[0]}"
@@ -62,9 +62,7 @@ pipeline {
                 dir("${WORKSPACE}/pipeline"){
                 echo '更新数据库'
                     script {
-                        def CHANGE_DIR_lowercase = readFile("${WORKSPACE}/pipeline/temp/CHANGE_DIR_lowercase").split("\r?\n").each {
-                                println it
-                        }
+                        def CHANGE_DIR_lowercase = readFile("${WORKSPACE}/pipeline/temp/CHANGE_DIR_lowercase").split("\r?\n").each {}
                         def imageName = "10.12.4.26:5000/user-images/${CHANGE_DIR_lowercase[0]}:${BUILD_NUMBER}"
                         def PROVIDER = readFile("${WORKSPACE}/pipeline/temp/PROVIDER").split("\r?\n").each{}
                         def DESCRIPTION = readFile("${WORKSPACE}/pipeline/temp/DESCRIPTION").split("\r?\n").each{}
@@ -91,7 +89,10 @@ pipeline {
             script {
                 def CHANGE_DIR_original = readFile("${WORKSPACE}/pipeline/temp/CHANGE_DIR_original").split("\r?\n").each {}
                 if ("${CHANGE_DIR_original}" != '[]'){
-                    emailext body: '${SCRIPT,template="Providers-Notification.template"}', recipientProviders: [[$class: 'DevelopersRecipientProvider']], subject: '失败！ $DEFAULT_SUBJECT', to:"${PROVIDER[0]}"
+                    if (fileExists ('${WORKSPACE}/pipeline/temp/PROVIDER')){
+                        def PROVIDER = readFile("${WORKSPACE}/pipeline/temp/PROVIDER").split("\r?\n").each{}
+                        emailext body: '$DEFAULT_CONTENT', subject: '失败！ $DEFAULT_SUBJECT', to: "${PROVIDER[0]}"
+                    }
                     emailext body: '$DEFAULT_CONTENT', subject: '失败！ $DEFAULT_SUBJECT', to: "${EMAIL_LIST}"
                 }
                 else{
@@ -104,15 +105,15 @@ pipeline {
    			emailext body: '$DEFAULT_CONTENT', subject: '恭喜！ $PROJECT_NAME - Build # $BUILD_NUMBER - 构建成功!', to: "${EMAIL_LIST}"
             script {
                 def PROVIDER = readFile("${WORKSPACE}/pipeline/temp/PROVIDER").split("\r?\n").each{}
-                emailext body: '${SCRIPT,template="Providers-Notification.template"}', recipientProviders: [[$class: 'DevelopersRecipientProvider']], subject: '恭喜！ $DEFAULT_SUBJECT', to:"${PROVIDER[0]}"
+                emailext body: '$DEFAULT_CONTENT', subject: '恭喜！ $DEFAULT_SUBJECT', to: "${PROVIDER[0]}"
             }
    		}
    		aborted{
    			echo '流水线已被用户终止'
-   			emailext body: '${JELLY_SCRIPT,template="html"}', subject: '已终止! $PROJECT_NAME - Build # $BUILD_NUMBER', to: "${EMAIL_LIST}"
+   			emailext body: '$DEFAULT_CONTENT', subject: '已终止！ $DEFAULT_SUBJECT', to: "${EMAIL_LIST}"
             script {
                 def PROVIDER = readFile("${WORKSPACE}/pipeline/temp/PROVIDER").split("\r?\n").each {}
-                emailext body: '${SCRIPT,template="Providers-Notification.template"}', recipientProviders: [[$class: 'DevelopersRecipientProvider']], subject: '已终止！ $DEFAULT_SUBJECT', to:"${PROVIDER[0]}"
+                emailext body: '$DEFAULT_CONTENT', subject: '已终止！ $DEFAULT_SUBJECT', to: "${PROVIDER[0]}"
             }
    		}
         cleanup {
