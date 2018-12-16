@@ -5,7 +5,7 @@ pipeline {
         EMAIL_LIST='sangjing@leinao.ai'
     }
 	options {
-        timeout(time: 60, unit: 'MINUTES')
+        timeout(time: 12, unit: 'HOURS')
 		buildDiscarder(logRotator(numToKeepStr: '30'))
     }
     stages {
