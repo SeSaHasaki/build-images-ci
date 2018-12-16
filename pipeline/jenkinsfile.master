@@ -11,8 +11,8 @@ pipeline {
     stages {
 		stage('代码检查') {
             steps {
-				echo '本次更新如下：'
-				sh 'echo `git log -5 --stat --name-only | grep images`'
+				echo '本次Dockerfile更新如下：'
+				sh 'echo `git log -5 --stat --name-only | grep images | grep Dockerfile`'
 				echo "文件路径：${WORKSPACE}"
 				echo "用户镜像存储路径：${JOB_BASE_NAME}/images"
 				sh 'mkdir ${WORKSPACE}/pipeline/temp'
