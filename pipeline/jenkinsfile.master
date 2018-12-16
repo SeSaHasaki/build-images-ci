@@ -5,14 +5,14 @@ pipeline {
         EMAIL_LIST='sangjing@leinao.ai'
     }
 	options {
-        timeout(time: 15, unit: 'MINUTES')
+        timeout(time: 60, unit: 'MINUTES')
 		buildDiscarder(logRotator(numToKeepStr: '30'))
     }
     stages {
 		stage('代码检查') {
             steps {
 				echo '本次Dockerfile更新如下：'
-				sh 'echo `git log -5 --stat --name-only | grep images | grep Dockerfile`'
+				sh 'echo "`git log -5 --stat --name-only | grep images | grep Dockerfile`"'
 				echo "文件路径：${WORKSPACE}"
 				echo "用户镜像存储路径：${JOB_BASE_NAME}/images"
 				sh 'mkdir ${WORKSPACE}/pipeline/temp'
