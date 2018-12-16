@@ -11,8 +11,8 @@ pipeline {
     stages {
 		stage('代码检查') {
             steps {
-				echo '本次Dockerfile更新如下：'
-				sh 'echo "`git log -5 --stat --name-only | grep images | grep Dockerfile`"'
+				echo '最近三次提交的版本中Dockerfile的更新如下：'
+				sh 'echo "`git log -3 --stat --name-only | grep images | grep Dockerfile`"'
 				echo "文件路径：${WORKSPACE}"
 				echo "用户镜像存储路径：${JOB_BASE_NAME}/images"
 				sh 'mkdir ${WORKSPACE}/pipeline/temp'
@@ -24,11 +24,11 @@ pipeline {
                 dir('pipeline'){
                     script {
                         docker.withRegistry('http://10.12.4.26:5000') {
-                            sh 'git log -5 --name-only -- | grep images | grep Dockerfile | awk -F \'/\' \'{print$2}\' > temp/CHANGE_DIR_original'
+                            sh 'git log -3 --name-only -- | grep images | grep Dockerfile | awk -F \'/\' \'{print$2}\' > temp/CHANGE_DIR_original'
                             sh 'echo "最近用户镜像目录：`cat ${WORKSPACE}/pipeline/temp/CHANGE_DIR_original`"'
                             def CHANGE_DIR_original = readFile("${WORKSPACE}/pipeline/temp/CHANGE_DIR_original").split("\r?\n").each {}
                             echo "本次用户镜像目录：${CHANGE_DIR_original[0]}"
-                            sh 'git log -5 --name-only -- | grep images | grep Dockerfile | awk -F \'/\' \'{print$2}\'| tr \'A-Z\' \'a-z\' > temp/CHANGE_DIR_lowercase'
+                            sh 'git log -3 --name-only -- | grep images | grep Dockerfile | awk -F \'/\' \'{print$2}\'| tr \'A-Z\' \'a-z\' > temp/CHANGE_DIR_lowercase'
                             def CHANGE_DIR_lowercase = readFile("${WORKSPACE}/pipeline/temp/CHANGE_DIR_lowercase").split("\r?\n").each {}
                             if ("${CHANGE_DIR_original}" != '[]'){
                                 dir("${WORKSPACE}/images/${CHANGE_DIR_original[0]}"){
