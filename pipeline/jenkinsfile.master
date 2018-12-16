@@ -36,6 +36,7 @@ pipeline {
                                     sh 'echo "镜像制作人：`cat ${WORKSPACE}/pipeline/temp/PROVIDER`"'
                                     //if (fileExists ('readme.md')){
                                         sh 'cat `ls | grep -i readme.md` | head -3 | awk \'{{printf"%s,",$0}}\' > ${WORKSPACE}/pipeline/temp/DESCRIPTION'
+                                        sh 'sed -i "/./{s/^/\'/;s/$/\'/}" ${WORKSPACE}/pipeline/temp/DESCRIPTION'
                                     //}else{
                                     //    def PROVIDER = readFile("${WORKSPACE}/pipeline/temp/PROVIDER").split("\r?\n").each{}
                                     //    emailext body: '${SCRIPT,template="Providers-Notification.template"}', recipientProviders: [[$class: 'DevelopersRecipientProvider']], subject: '缺少Readme文件！ $DEFAULT_SUBJECT', to:"${PROVIDER[0]}"
