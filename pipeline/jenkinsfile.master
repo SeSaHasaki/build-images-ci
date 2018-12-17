@@ -34,12 +34,8 @@ pipeline {
                                 dir("${WORKSPACE}/images/${CHANGE_DIR_original[0]}"){
                                     sh 'cat Dockerfile | grep MAINTAINER | awk \'{print $2}\' > ${WORKSPACE}/pipeline/temp/PROVIDER'
                                     sh 'echo "镜像制作人：`cat ${WORKSPACE}/pipeline/temp/PROVIDER`"'
-                                    try {
+                                    catchError {
                                         sh 'rename -v `ls | grep -i readme.md` readme.md `ls | grep -i readme.md`'
-                                    }
-                                    catch (exc) {
-                                        echo '没有发现readme文件!'
-                                        throw
                                     }
                                     //sh 'rename -v `ls | grep -i readme.md` readme.md `ls | grep -i readme.md`'
                                     if (fileExists ('readme.md')){
