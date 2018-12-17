@@ -37,7 +37,6 @@ pipeline {
                                     catchError {
                                         sh 'rename -v `ls | grep -i readme.md` readme.md `ls | grep -i readme.md`'
                                     }
-                                    //sh 'rename -v `ls | grep -i readme.md` readme.md `ls | grep -i readme.md`'
                                     if (fileExists ('readme.md')){
                                         echo "发现readme文件"
                                         sh 'cat `ls | grep -i readme.md` | head -3 | awk \'{{printf"%s,",$0}}\' > ${WORKSPACE}/pipeline/temp/DESCRIPTION'
