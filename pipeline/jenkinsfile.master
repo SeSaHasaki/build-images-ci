@@ -63,7 +63,7 @@ pipeline {
                                                 echo "镜像描述：${DESCRIPTION}"
                                                 sh "python update_mysql.py ${imageName} ${PROVIDER[0]} ${DESCRIPTION}"
                                             }
-                                        echo '数据库更新完毕！'
+                                        echo '..................................................数据库更新完毕！'
                                     }
                                 }
                             }
