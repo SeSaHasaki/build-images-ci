@@ -37,6 +37,7 @@ pipeline {
                             def CHANGE_DIR_lowercase = readFile("${WORKSPACE}/pipeline/temp/CHANGE_DIR_lowercase").split("\r?\n").each {}
                             if ("${CHANGE_DIR_original}" != '[]'){
                                 for ( int dockerfile_num = 0; dockerfile_num < CHANGE_DIR_original.size(); ++dockerfile_num ){
+                                    def imageName = "10.12.4.26:5000/user-images/${CHANGE_DIR_lowercase[0]}:${BUILD_NUMBER}"
                                     dir("${WORKSPACE}/images/${CHANGE_DIR_original[dockerfile_num]}"){
                                         sh 'cat Dockerfile | grep MAINTAINER | awk \'{print $2}\' > ${WORKSPACE}/pipeline/temp/PROVIDER'
                                         sh 'echo "镜像制作人：`cat ${WORKSPACE}/pipeline/temp/PROVIDER`"'
@@ -54,7 +55,6 @@ pipeline {
                                             emailext body: '${SCRIPT,template="Providers-Notification.template"}', recipientProviders: [[$class: 'DevelopersRecipientProvider']], subject: '缺少Readme文件！ $DEFAULT_SUBJECT', to:"${PROVIDER[0]}"
                                             error '缺少Readme文件'
                                        }
-                                        def imageName = "10.12.4.26:5000/user-images/${CHANGE_DIR_lowercase[0]}:${BUILD_NUMBER}"
                                         def dockerFile = "-f Dockerfile ."
                                         docker.build(imageName,dockerFile).push()
                                         echo "============================================产生${dockerfile_num+1}个新镜像，镜像名称：${imageName}============================================"
@@ -62,8 +62,6 @@ pipeline {
                                     dir("${WORKSPACE}/pipeline"){
                                         echo '更新数据库中.....................................................'
                                             script {
-                                                def CHANGE_DIR_lowercase = readFile("${WORKSPACE}/pipeline/temp/CHANGE_DIR_lowercase").split("\r?\n").each {}
-                                                def imageName = "10.12.4.26:5000/user-images/${CHANGE_DIR_lowercase[0]}:${BUILD_NUMBER}"
                                                 def PROVIDER = readFile("${WORKSPACE}/pipeline/temp/PROVIDER").split("\r?\n").each{}
                                                 def DESCRIPTION = readFile("${WORKSPACE}/pipeline/temp/DESCRIPTION").split("\r?\n").each{}
                                                 echo "镜像描述：${DESCRIPTION}"
