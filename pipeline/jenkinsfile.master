@@ -39,7 +39,7 @@ pipeline {
                                         catchError {
                                             echo "循环次数：${dockerfile_num}"
                                             echo "路径：${CHANGE_DIR_original[dockerfile_num]}"
-                                            sh 'rename -v `ls ${WORKSPACE}/images/${CHANGE_DIR_original[dockerfile_num]}| grep -i readme.md` readme.md `ls ${WORKSPACE}/images/${CHANGE_DIR_original[dockerfile_num]}| grep -i readme.md`'
+                                            sh 'rename -v `ls | grep -i readme.md` readme.md `ls | grep -i readme.md`'
                                         }
                                         if (fileExists ('readme.md')){
                                             echo "发现readme文件"
