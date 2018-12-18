@@ -13,6 +13,7 @@ pipeline {
             steps {
 				sh 'git fetch --all'
                 sh 'git reset --hard origin/master'
+                sh 'git checkout master'
                 sh 'git pull'
 				echo '最近三次提交的版本中Dockerfile的更新如下：'
 				sh 'echo "`git log -3 --stat --name-only | grep images | grep Dockerfile`"'
