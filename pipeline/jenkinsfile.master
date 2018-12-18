@@ -59,6 +59,18 @@ pipeline {
                                         docker.build(imageName,dockerFile).push()
                                         echo "============================================产生${dockerfile_num+1}个新镜像，镜像名称：${imageName}============================================"
                                     }
+                                    dir("${WORKSPACE}/pipeline"){
+                                        echo '更新数据库中.....................................................'
+                                            script {
+                                                def CHANGE_DIR_lowercase = readFile("${WORKSPACE}/pipeline/temp/CHANGE_DIR_lowercase").split("\r?\n").each {}
+                                                def imageName = "10.12.4.26:5000/user-images/${CHANGE_DIR_lowercase[0]}:${BUILD_NUMBER}"
+                                                def PROVIDER = readFile("${WORKSPACE}/pipeline/temp/PROVIDER").split("\r?\n").each{}
+                                                def DESCRIPTION = readFile("${WORKSPACE}/pipeline/temp/DESCRIPTION").split("\r?\n").each{}
+                                                echo "镜像描述：${DESCRIPTION}"
+                                                sh "python update_mysql.py ${imageName} ${PROVIDER[0]} ${DESCRIPTION}"
+                                            }
+                                        echo '数据库更新完毕！'
+                                    }
                                 }
                             }
                             else{
@@ -72,17 +84,18 @@ pipeline {
 
 		stage('更新数据库') {
             steps {
-                dir("${WORKSPACE}/pipeline"){
-                echo '更新数据库'
-                    script {
-                        def CHANGE_DIR_lowercase = readFile("${WORKSPACE}/pipeline/temp/CHANGE_DIR_lowercase").split("\r?\n").each {}
-                        def imageName = "10.12.4.26:5000/user-images/${CHANGE_DIR_lowercase[0]}:${BUILD_NUMBER}"
-                        def PROVIDER = readFile("${WORKSPACE}/pipeline/temp/PROVIDER").split("\r?\n").each{}
-                        def DESCRIPTION = readFile("${WORKSPACE}/pipeline/temp/DESCRIPTION").split("\r?\n").each{}
-                        echo "镜像描述：${DESCRIPTION}"
-                        sh "python update_mysql.py ${imageName} ${PROVIDER[0]} ${DESCRIPTION}"
-                    }
-				}
+               // dir("${WORKSPACE}/pipeline"){
+               // echo '更新数据库'
+                 //   script {
+                   //     def CHANGE_DIR_lowercase = readFile("${WORKSPACE}/pipeline/temp/CHANGE_DIR_lowercase").split("\r?\n").each {}
+                     //   def imageName = "10.12.4.26:5000/user-images/${CHANGE_DIR_lowercase[0]}:${BUILD_NUMBER}"
+                        //def PROVIDER = readFile("${WORKSPACE}/pipeline/temp/PROVIDER").split("\r?\n").each{}
+                       // def DESCRIPTION = readFile("${WORKSPACE}/pipeline/temp/DESCRIPTION").split("\r?\n").each{}
+                        //echo "镜像描述：${DESCRIPTION}"
+                        //sh "python update_mysql.py ${imageName} ${PROVIDER[0]} ${DESCRIPTION}"
+                  //  }
+				//}
+				echo '------------------------------------------所有数据库更新完毕------------------------------------------'
 			}
         }
     }
