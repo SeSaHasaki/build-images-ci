@@ -33,13 +33,12 @@ pipeline {
                             def CHANGE_DIR_lowercase = readFile("${WORKSPACE}/pipeline/temp/CHANGE_DIR_lowercase").split("\r?\n").each {}
                             if ("${CHANGE_DIR_original}" != '[]'){
                                 for ( int dockerfile_num = 0; dockerfile_num < CHANGE_DIR_original.size(); ++dockerfile_num ){
-                                    echo "${dockerfile_num}"
-                                    echo "${CHANGE_DIR_original[dockerfile_num]}"
-                                    echo "${CHANGE_DIR_original[${dockerfile_num}]}"
                                     dir("${WORKSPACE}/images/${CHANGE_DIR_original[dockerfile_num]}"){
                                         sh 'cat Dockerfile | grep MAINTAINER | awk \'{print $2}\' > ${WORKSPACE}/pipeline/temp/PROVIDER'
                                         sh 'echo "镜像制作人：`cat ${WORKSPACE}/pipeline/temp/PROVIDER`"'
                                         catchError {
+                                            echo "循环次数：${dockerfile_num}"
+                                            echo "路径：${CHANGE_DIR_original[dockerfile_num]}"
                                             sh 'rename -v `ls ${WORKSPACE}/images/${CHANGE_DIR_original[dockerfile_num]}| grep -i readme.md` readme.md `ls ${WORKSPACE}/images/${CHANGE_DIR_original[dockerfile_num]}| grep -i readme.md`'
                                         }
                                         if (fileExists ('readme.md')){
