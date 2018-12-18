@@ -37,7 +37,7 @@ pipeline {
                                         sh 'cat Dockerfile | grep MAINTAINER | awk \'{print $2}\' > ${WORKSPACE}/pipeline/temp/PROVIDER'
                                         sh 'echo "镜像制作人：`cat ${WORKSPACE}/pipeline/temp/PROVIDER`"'
                                         catchError {
-                                            sh 'rename -v `ls | grep -i readme.md` readme.md `ls | grep -i readme.md`'
+                                            sh 'rename -v `ls ${WORKSPACE}/images/${CHANGE_DIR_original[dockerfile_num]}| grep -i readme.md` readme.md `ls ${WORKSPACE}/images/${CHANGE_DIR_original[dockerfile_num]}| grep -i readme.md`'
                                         }
                                         if (fileExists ('readme.md')){
                                             echo "发现readme文件"
@@ -51,7 +51,7 @@ pipeline {
                                         def imageName = "10.12.4.26:5000/user-images/${CHANGE_DIR_lowercase[0]}:${BUILD_NUMBER}"
                                         def dockerFile = "-f Dockerfile ."
                                         docker.build(imageName,dockerFile).push()
-                                        echo "产生${dockerfile_num}+1个新镜像，镜像名称：${imageName}"
+                                        echo "================================================================产生${dockerfile_num}+1个新镜像，镜像名称：${imageName}================================================================"
                                     }
                                 }
                             }
